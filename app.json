@@ -3,9 +3,14 @@
   "displayName": "ArgenDriver",
   "expo": {
     "name": "ArgenDriver",
-    "slug": "ArgenDriver",
-    "scheme": "argendriver",
+    "slug": "argen-driver",
+    "scheme": "argen-driver",
     "version": "1.0.0",
+    "extra": {
+      "eas": {
+        "projectId": "688f71b0-0f5e-4887-b1b6-2a4af317449e"
+      }
+    },
     "orientation": "portrait",
     "icon": "./assets/images/app-icon-all.png",
     "splash": {
@@ -14,7 +19,10 @@
       "backgroundColor": "#191015"
     },
     "updates": {
-      "fallbackToCacheTimeout": 0
+      "url": "https://u.expo.dev/688f71b0-0f5e-4887-b1b6-2a4af317449e"
+    },
+    "runtimeVersion": {
+      "policy": "appVersion"
     },
     "jsEngine": "hermes",
     "assetBundlePatterns": [

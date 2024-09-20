@@ -24,6 +24,7 @@ interface BaseScreenProps {
    * Style for the outer content container useful for padding & margin.
    */
   style?: StyleProp<ViewStyle>
+  topContainerStyle?: StyleProp<ViewStyle>
   /**
    * Style for the inner content container useful for padding & margin.
    */
@@ -233,12 +234,13 @@ export function Screen(props: ScreenProps) {
     safeAreaEdges,
     StatusBarProps,
     statusBarStyle = "dark",
+    topContainerStyle
   } = props
 
   const $containerInsets = useSafeAreaInsetsStyle(safeAreaEdges)
 
   return (
-    <View style={[$containerStyle, { backgroundColor }, $containerInsets]}>
+    <View style={[$containerStyle, topContainerStyle, { backgroundColor }, $containerInsets]}>
       <StatusBar style={statusBarStyle} {...StatusBarProps} />
 
       <KeyboardAvoidingView

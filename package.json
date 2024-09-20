@@ -32,7 +32,8 @@
   "dependencies": {
     "@expo-google-fonts/space-grotesk": "^0.2.2",
     "@expo/metro-runtime": "~3.2.1",
-    "@react-native-async-storage/async-storage": "1.21.0",
+    "@react-native-async-storage/async-storage": "^2.0.0",
+    "@react-native-picker/picker": "2.7.5",
     "@react-navigation/bottom-tabs": "^6.3.2",
     "@react-navigation/native": "^6.0.2",
     "@react-navigation/native-stack": "^6.0.2",
@@ -47,6 +48,7 @@
     "expo-localization": "~15.0.3",
     "expo-splash-screen": "~0.27.4",
     "expo-status-bar": "~1.12.1",
+    "expo-updates": "~0.25.24",
     "i18n-js": "^4.4.3",
     "mobx": "6.10.2",
     "mobx-react-lite": "4.0.5",

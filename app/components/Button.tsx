@@ -1,10 +1,11 @@
-import React, { ComponentType } from "react"
+import React, { ComponentType, forwardRef, Ref } from "react"
 import {
   Pressable,
   PressableProps,
   PressableStateCallbackType,
   StyleProp,
   TextStyle,
+  View,
   ViewStyle,
 } from "react-native"
 import { colors, spacing, typography } from "../theme"
@@ -19,6 +20,7 @@ export interface ButtonAccessoryProps {
 }
 
 export interface ButtonProps extends PressableProps {
+  ref?: Ref<Element>
   /**
    * Text which is looked up via i18n.
    */
@@ -95,7 +97,7 @@ export interface ButtonProps extends PressableProps {
  *   onPress={handleButtonPress}
  * />
  */
-export function Button(props: ButtonProps) {
+export const Button = forwardRef<View, ButtonProps>(function Button(props, ref) {
   const {
     tx,
     text,
@@ -148,6 +150,7 @@ export function Button(props: ButtonProps) {
       accessibilityState={{ disabled: !!disabled }}
       {...rest}
       disabled={disabled}
+      ref={ref}
     >
       {(state) => (
         <>
@@ -170,7 +173,7 @@ export function Button(props: ButtonProps) {
       )}
     </Pressable>
   )
-}
+})
 
 const $baseViewStyle: ViewStyle = {
   minHeight: 56,
