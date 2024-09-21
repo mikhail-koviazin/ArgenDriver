@@ -22,6 +22,10 @@ export const i18n = new I18n(
   { locale: fallbackLocale, defaultLocale: fallbackLocale, enableFallback: true },
 )
 
+export const setLanguage = (lang: "en" | "ru") => {
+    i18n.locale = lang
+}
+
 const systemLocale = Localization.getLocales()[0]
 const systemLocaleTag = systemLocale?.languageTag ?? fallbackLocale
 

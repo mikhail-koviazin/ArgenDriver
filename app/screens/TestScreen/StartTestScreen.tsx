@@ -1,37 +1,56 @@
-import React, { FC, useState } from "react"
+import React, { FC, useEffect, useState } from "react"
 import { Platform, TextStyle, ViewStyle } from "react-native"
 import { Button, Screen, Text } from "../../components"
 import { DemoTabScreenProps } from "../../navigators/DemoNavigator"
 import { spacing } from "../../theme"
 import { Picker } from "@react-native-picker/picker"
+import { i18n, setLanguage } from "app/i18n"
 
 export const StartTestScreen: FC<DemoTabScreenProps<"StartTest">> = function StartTestScreen(
   _props,
 ) {
-  const [questionsCount, setQuestionsCount] = useState(20)
+    const [questionsCount, setQuestionsCount] = useState(20)
 
-  // function onQuestionCountChanged (text: string) {
-  //   const numberTxt = text.replace(/[^0-9]/g, '');
-  //   try {
-  //     const number = parseInt(numberTxt);
-  //     if (number < 10) {
-  //       setQuestionsCount('10');
-  //       return;
-  //     }
-  //     if (number > 100) {
-  //       setQuestionsCount('100');
-  //       return;
-  //     }
-  //     setQuestionsCount(number.toString());
-  //   } catch (e) {
-  //
-  //   }
-  // }
+    // function onQuestionCountChanged (text: string) {
+    //   const numberTxt = text.replace(/[^0-9]/g, '');
+    //   try {
+    //     const number = parseInt(numberTxt);
+    //     if (number < 10) {
+    //       setQuestionsCount('10');
+    //       return;
+    //     }
+    //     if (number > 100) {
+    //       setQuestionsCount('100');
+    //       return;
+    //     }
+    //     setQuestionsCount(number.toString());
+    //   } catch (e) {
+    //
+    //   }
+    // }
+
+    const [lang, setLang] = useState<"en" | "ru">(i18n.locale as ("en" | "ru"));
+    const [, setCounter] = useState(0);
+
+    useEffect(() => {
+        setLanguage(lang);
+        setCounter((c) => c + 1);
+    }, [lang])
 
   return (
     <Screen preset="fixed" contentContainerStyle={$container} safeAreaEdges={["top"]}>
       <Text preset="heading" tx="startTestScreen.title" style={$title} />
       <Text tx="startTestScreen.subtitle" style={$tagline} />
+
+      <Picker
+        selectedValue={lang}
+        onValueChange={(value) => setLang(value)}
+        mode="dropdown"
+        style={[$picker, Platform.OS === "web" && $pickerWebOnly]}
+      >
+        <Picker.Item label="English" value="en" />
+        <Picker.Item label="Russian" value="ru" />
+      </Picker>
 
       <Picker
         selectedValue={questionsCount}
