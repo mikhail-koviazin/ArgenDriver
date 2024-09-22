@@ -1,5 +1,6 @@
+import { openComposer } from "react-native-email-link";
 import React, { FC, useEffect, useLayoutEffect, useState } from "react"
-import { Image, ImageStyle, TextStyle, View, ViewStyle, Modal, Linking } from "react-native"
+import { Image, ImageStyle, TextStyle, View, ViewStyle, Modal, Platform, Linking } from "react-native"
 import { Button, Header, Icon, Screen, Text } from "app/components"
 import { DemoTabScreenProps } from "app/navigators/DemoNavigator"
 import { colors, spacing } from "app/theme"
@@ -260,29 +261,42 @@ export const TestScreen: FC<DemoTabScreenProps<"Test">> = function TestScreen({
                     [
                         "testScreen.errorModalIncorrectTranslation",
                         "[ArgenDriver-BUG]",
-                        `[${curQuestion.num}] Incorrect translation%0D%0A%0D%0AQuestion:%0D%0A - ${curQuestion.text.es}%0D%0A - ${curQuestion.text[lang]}%0D%0A%0D%0A${curQuestion.responses.map((response) => ` - ${response.text.es}%0D%0A - ${response.text[lang]}`).join("%0D%0A%0D%0A")}%0D%0A%0D%0AYou may write more details here...`
+                        `[${curQuestion.num}] Incorrect translation\r\n\r\nQuestion:\r\n - ${curQuestion.text.es}\r\n - ${curQuestion.text[lang]}\r\n\r\n${curQuestion.responses.map((response) => ` - ${response.text.es}\r\n - ${response.text[lang]}`).join("\r\n\r\n")}\r\n\r\nYou may write more details here...`
                     ],
                     [
                         "testScreen.errorModalIncorrectImage",
                         "[ArgenDriver-BUG]",
-                        `[${curQuestion.num}] Incorrect image%0D%0A%0D%0AQuestion:%0D%0A - ${curQuestion.text.es}%0D%0A%0D%0AImage: ${curQuestion.img}%0D%0A%0D%0AYou may write more details here...`
+                        `[${curQuestion.num}] Incorrect image\r\n\r\nQuestion:\r\n - ${curQuestion.text.es}\r\n\r\nImage: ${curQuestion.img}\r\n\r\nYou may write more details here...`
                     ],
                     [
                         "testScreen.errorModalIncorrectCorrectAnswerSpanish",
                         "[ArgenDriver-BUG]",
-                        `[${curQuestion.num}] Incorrect correct answer (Spanish)%0D%0A%0D%0AQuestion:%0D%0A - ${curQuestion.text.es}%0D%0A%0D%0A${curQuestion.responses.map((response) => ` - ${response.text.es}%0D%0A - ${response.correct ? "correct" : "incorrect"}`).join("%0D%0A%0D%0A")}%0D%0A%0D%0AYou may write more details here...`
+                        `[${curQuestion.num}] Incorrect correct answer (Spanish)\r\n\r\nQuestion:\r\n - ${curQuestion.text.es}\r\n\r\n${curQuestion.responses.map((response) => ` - ${response.text.es}\r\n - ${response.correct ? "correct" : "incorrect"}`).join("\r\n\r\n")}\r\n\r\nYou may write more details here...`
                     ],
                     [
                         "testScreen.errorModalIncorrectOther",
                         "[ArgenDriver-BUG]",
-                        `[${curQuestion.num}] Other%0D%0A%0D%0APlease describe the issue here (don't delete question number above)`
+                        `[${curQuestion.num}] Other\r\n\r\nPlease describe the issue here (don't delete question number above)`
                     ],
               ] as const).map(([tx, subject, body], i) => (
                 <Button
                   key={i}
                   tx={tx}
                   onPress={() => {
-                    Linking.openURL(`mailto:mikhail.koviazin+argen-driver-bug@gmail.com?subject=${subject}&body=${body}`);
+                    if (Platform.OS === "web") {
+                        // const hiddenElement = document.createElement('a');
+                        // hiddenElement.href = `mailto:mikhail.koviazin+argen-driver-bug@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body.replaceAll(/\?/g, "¿"))}`;
+                        // console.log(hiddenElement.href);
+                        // hiddenElement.target = '_blank';
+                        // hiddenElement.click();
+                        Linking.openURL(`mailto:mikhail.koviazin+argen-driver-bug@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body.replaceAll(/\?/g, "¿"))}`);
+                    } else {
+                      openComposer({
+                        to: "mikhail.koviazin+argen-driver-bug@gmail.com",
+                        subject,
+                        body: body.replaceAll(/\?/g, "¿")
+                      });
+                    }
                     setErrorModalVisible(false);
                   }}
                 />

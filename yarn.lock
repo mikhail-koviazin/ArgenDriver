@@ -8110,6 +8110,11 @@ react-native-drawer-layout@4.0.0-alpha.9:
   dependencies:
     use-latest-callback "^0.1.9"
 
+react-native-email-link@^1.16.1:
+  version "1.16.1"
+  resolved "https://registry.yarnpkg.com/react-native-email-link/-/react-native-email-link-1.16.1.tgz#e46f2f0baa1343e05618abdd1248f42e0baf8e9b"
+  integrity sha512-uTolJXOa6HKPEiRAQuLKN/OhVwUA4xS++yPV6YiCtRBWxl2q3FUlrJt1G6plfMAEU4qNhmwZnH3tCJ9WNYIDhg==
+
 react-native-flipper@^0.164.0:
   version "0.164.0"
   resolved "https://registry.yarnpkg.com/react-native-flipper/-/react-native-flipper-0.164.0.tgz#64f6269a86a13a72e30f53ba9f5281d2073a7697"
