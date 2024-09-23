@@ -13254,15 +13254,15 @@
       {
         "text": {
           "es": "No, al reducir la velocidad, mayor es la proporción de agua en el asfalto.",
-          "en": "Yes, with rain, the grip is lower.",
-          "ru": "Да, при дожде сцепление хуже."
+          "en": "No, by reducing speed, the proportion of water on the asphalt is greater.",
+          "ru": "Нет, при снижении скорости доля воды на асфальте больше.",
         }
       },
       {
         "text": {
           "es": "Sí, con lluvia la adherencia es menor.",
-          "en": "No, by reducing speed, the proportion of water on the asphalt is greater.",
-          "ru": "Нет, при снижении скорости доля воды на асфальте больше."
+          "en": "Yes, with rain, the grip is lower.",
+          "ru": "Да, при дожде сцепление хуже."
         },
         "correct": true
       },
@@ -15977,15 +15977,15 @@
           "es": "No, ya que por normativa no está permitido trasladar mascotas en un automóvil particular.",
           "en": "No, as pets must be transported in the back seats secured with a harness or appropriate restraint system.",
           "ru": "Нет, так как домашних животных необходимо перевозить на задних сиденьях, крепя их с помощью ремня или соответствующей системы удержания."
-        }
+        },
+        "correct": true
       },
       {
         "text": {
           "es": "No, ya que las mascotas deben ser transportadas en los asientos traseros sujetos con arnés o sistema de retención correspondiente.",
           "en": "No, as the regulation does not allow transporting pets in a private car.",
           "ru": "Нет, так как по правилам нельзя перевозить домашних животных в легковых автомобилях."
-        },
-        "correct": true
+        }
       }
     ],
     "explanation": {
