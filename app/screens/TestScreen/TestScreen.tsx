@@ -1,6 +1,6 @@
 import { openComposer } from "react-native-email-link";
-import React, { FC, useEffect, useLayoutEffect, useState } from "react"
-import { Image, ImageStyle, TextStyle, View, ViewStyle, Modal, Platform, Linking } from "react-native"
+import React, { FC, useEffect, useLayoutEffect, useRef, useState } from "react"
+import { Image, ImageStyle, TextStyle, View, ViewStyle, Modal, Platform, Linking, ScrollView } from "react-native"
 import { Button, Header, Icon, Screen, Text } from "app/components"
 import { DemoTabScreenProps } from "app/navigators/DemoNavigator"
 import { colors, spacing } from "app/theme"
@@ -31,6 +31,8 @@ export const TestScreen: FC<DemoTabScreenProps<"Test">> = function TestScreen({
   const [answer, setAnswer] = useState<number | undefined>(undefined);
   const [answers, setAnswers] = useState<Answer[]>([]);
 
+  const scrollRef = useRef<ScrollView>();
+
   useEffect(() => {
     // setSelectedQuestions([questions[77], questions[6]]);
     // return;
@@ -46,8 +48,12 @@ export const TestScreen: FC<DemoTabScreenProps<"Test">> = function TestScreen({
   }, [forceQuestion])
 
   useEffect(() => {
-    setLang("es")
-    setAnswer(undefined)
+    setLang("es");
+    setAnswer(undefined);
+    scrollRef.current?.scrollTo({
+      y: 0,
+      animated: false,
+    });
   }, [curQuestionNum])
 
   const curQuestion = selectedQuestions[curQuestionNum]
@@ -94,13 +100,13 @@ export const TestScreen: FC<DemoTabScreenProps<"Test">> = function TestScreen({
     : ""
 
   return (
-    <Screen preset="scroll" style={$container} contentContainerStyle={$innerContainer} safeAreaEdges={["bottom"]} ScrollViewProps={{alwaysBounceVertical: false}}>
+      // @ts-ignore
+    <Screen preset="scroll" style={$container} contentContainerStyle={$innerContainer} safeAreaEdges={["bottom"]} ScrollViewProps={{alwaysBounceVertical: false, ref: scrollRef}}>
       <Text preset="default" text={curQuestion.text[lang]} size="md" style={$question} />
 
-      <View style={$questionImageContainer}>
+      <View style={{...$questionImageContainer, minHeight: imageLocalUri ? 200 : undefined}}>
         {imageLocalUri ? <Image source={imageLocalUri} style={$questionImage} /> : undefined}
       </View>
-
 
       <View style={$prevNextContainer}>
         <Button
@@ -338,12 +344,11 @@ const $question: TextStyle = {
   textAlign: "center",
 }
 
-const $questionImageContainer: ImageStyle = {
+const $questionImageContainer: ViewStyle = {
   flex: 1,
   display: "flex",
   alignItems: "center",
   justifyContent: "center",
-  minHeight: 200,
 }
 
 const $questionImage: ImageStyle = {
