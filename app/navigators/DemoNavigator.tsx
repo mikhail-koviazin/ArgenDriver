@@ -8,9 +8,11 @@ import { translate } from "../i18n"
 import { StartTestScreen } from "../screens"
 import { colors, spacing, typography } from "../theme"
 import { AppStackParamList, AppStackScreenProps } from "./AppNavigator"
+import { ChangelogScreen } from "app/screens/Changelog/ChangelogScreen"
 
 export type DemoTabParamList = {
   StartTest: undefined
+  Changelog: undefined
   Test: { questionsCount: number; forceQuestion?: number; }
   DemoShowroom: { queryIndex?: string; itemIndex?: string }
   DemoDebug: undefined
@@ -56,6 +58,16 @@ export function DemoNavigator() {
         component={StartTestScreen}
         options={{
           tabBarLabel: translate("demoNavigator.startTestTab"),
+          tabBarIcon: ({ focused }) => (
+            <Icon icon="components" color={focused ? colors.tint : undefined} size={30} />
+          ),
+        }}
+      />
+      <Tab.Screen
+        name="Changelog"
+        component={ChangelogScreen}
+        options={{
+          tabBarLabel: translate("demoNavigator.changeLogTab"),
           tabBarIcon: ({ focused }) => (
             <Icon icon="community" color={focused ? colors.tint : undefined} size={30} />
           ),
