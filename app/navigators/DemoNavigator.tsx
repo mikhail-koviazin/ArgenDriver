@@ -11,7 +11,7 @@ import { AppStackParamList, AppStackScreenProps } from "./AppNavigator"
 
 export type DemoTabParamList = {
   StartTest: undefined
-  Test: { questionsCount: number }
+  Test: { questionsCount: number; forceQuestion?: number; }
   DemoShowroom: { queryIndex?: string; itemIndex?: string }
   DemoDebug: undefined
   DemoPodcastList: undefined

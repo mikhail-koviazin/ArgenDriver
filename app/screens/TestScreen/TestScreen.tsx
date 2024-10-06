@@ -20,7 +20,7 @@ export const TestScreen: FC<DemoTabScreenProps<"Test">> = function TestScreen({
   navigation,
   route,
 }) {
-  const { questionsCount } = route.params
+  const { questionsCount, forceQuestion } = route.params
 
   const [lang, setLang] = useState<"ru" | "en" | "es">("es")
   const [modalVisible, setModalVisible] = useState(false)
@@ -32,12 +32,18 @@ export const TestScreen: FC<DemoTabScreenProps<"Test">> = function TestScreen({
   const [answers, setAnswers] = useState<Answer[]>([]);
 
   useEffect(() => {
+    // setSelectedQuestions([questions[77], questions[6]]);
+    // return;
+    if (forceQuestion) {
+      setSelectedQuestions([questions[forceQuestion]]);
+      return;
+    }
     const selectedQuestions = questions
       .map((question, index) => (question ? { ...question, num: index } : question))
       .sort(() => Math.random() - 0.5)
       .slice(0, questionsCount)
     setSelectedQuestions(selectedQuestions)
-  }, [])
+  }, [forceQuestion])
 
   useEffect(() => {
     setLang("es")
@@ -88,7 +94,7 @@ export const TestScreen: FC<DemoTabScreenProps<"Test">> = function TestScreen({
     : ""
 
   return (
-    <Screen preset="fixed" contentContainerStyle={$container} safeAreaEdges={["bottom"]}>
+    <Screen preset="scroll" style={$container} contentContainerStyle={$innerContainer} safeAreaEdges={["bottom"]} ScrollViewProps={{alwaysBounceVertical: false}}>
       <Text preset="default" text={curQuestion.text[lang]} size="md" style={$question} />
 
       <View style={$questionImageContainer}>
@@ -317,11 +323,15 @@ export const TestScreen: FC<DemoTabScreenProps<"Test">> = function TestScreen({
 }
 
 const $container: ViewStyle = {
+  flex: 1
+}
+
+const $innerContainer: ViewStyle = {
   paddingHorizontal: spacing.lg,
   paddingVertical: spacing.sm,
-  gap: spacing.md,
   display: "flex",
-  flex: 1,
+  gap: spacing.md,
+  flexGrow: 1
 }
 
 const $question: TextStyle = {
@@ -333,13 +343,13 @@ const $questionImageContainer: ImageStyle = {
   display: "flex",
   alignItems: "center",
   justifyContent: "center",
+  minHeight: 200,
 }
 
 const $questionImage: ImageStyle = {
   width: "100%",
   height: "100%",
   resizeMode: "contain",
-  flex: 1,
 }
 
 const $prevNextContainer: ViewStyle = {

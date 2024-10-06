@@ -1272,17 +1272,24 @@
       {
         "text": {
           "es": "La velocidad máxima permitida en la vía donde se encuentra la ciclovía.",
-          "en": "25 km/h.",
-          "ru": "25 км/ч."
+          "en": "The maximum speed allowed on the road where the bike lane is located.",
+          "ru": "Максимально допустимая скорость на дороге, где расположена велосипедная дорожка."
         }
       },
       {
         "text": {
-          "es": "25 km/h.",
-          "en": "30 km/h.",
-          "ru": "30 км/ч."
+          "es": "25 km/h",
+          "en": "25 km/h.",
+          "ru": "25 км/ч."
         },
         "correct": true
+      },
+      {
+        "text": {
+          "es": "30 km/h.",
+          "en": "30 km/h.",
+          "ru": "30 км/ч."
+        }
       }
     ],
     "explanation": {
@@ -4749,15 +4756,15 @@
       {
         "text": {
           "es": "Comienza a disminuir de forma inmediata.",
-          "en": "It continues to rise for 1 hour and then begins to gradually descend.",
-          "ru": "Он продолжает расти в течение 1 часа, а затем начинает постепенно падать."
+          "en": "It begins to decrease immediately.",
+          "ru": "Он начинает сразу же уменьшаться."
         }
       },
       {
         "text": {
           "es": "Continúa subiendo durante 1 hora y luego comienza a descender paulatinamente.",
-          "en": "It begins to decrease immediately.",
-          "ru": "Он начинает сразу же уменьшаться."
+          "en": "It continues to rise for 1 hour and then begins to gradually descend.",
+          "ru": "Он продолжает расти в течение 1 часа, а затем начинает постепенно падать."
         },
         "correct": true
       },
