@@ -3644,15 +3644,15 @@
       {
         "text": {
           "es": "En ese mismo momento y ante la Autoridad de Control si ésta lo requiere.",
-          "en": "At the office of the corresponding General Administration of Infractions.",
-          "ru": "В офисе соответствующей Генеральной администрации штрафов."
+          "en": "At that same moment and before the Control Authority if required.",
+          "ru": "В тот же момент и перед органом контроля, если это требуется.",
         }
       },
       {
         "text": {
           "es": "Ante la oficina de la Dirección General de Administración de Infracciones que corresponda.",
-          "en": "At that same moment and before the Control Authority if required.",
-          "ru": "В тот же момент и перед органом контроля, если это требуется."
+          "en": "At the office of the corresponding General Administration of Infractions.",
+          "ru": "В офисе соответствующей Генеральной администрации штрафов."
         },
         "correct": true
       },
@@ -5708,15 +5708,15 @@
       {
         "text": {
           "es": "No, ya que no hay otros vehículos junto a él.",
-          "en": "Yes, because despite being stopped, it is in the traffic lane and their attention is not directed to the context.",
-          "ru": "Да, потому что, хотя и остановлено, это на дороге и внимание не направлено на контекст."
+          "en": "No, as there are no other vehicles next to it.",
+          "ru": "Нет, так как рядом нет других транспортных средств."
         }
       },
       {
         "text": {
           "es": "Sí, ya que a pesar de estar detenido, está en la vía de circulación y su atención no está dirigida al contexto.",
-          "en": "No, as there are no other vehicles next to it.",
-          "ru": "Нет, так как рядом нет других транспортных средств."
+          "en": "Yes, because despite being stopped, it is in the traffic lane and their attention is not directed to the context.",
+          "ru": "Да, потому что, хотя и остановлено, это на дороге и внимание не направлено на контекст.",
         },
         "correct": true
       },
@@ -7963,15 +7963,15 @@
       {
         "text": {
           "es": "Disminuir un poco la velocidad y mirar que no se acerquen vehículos por la vía a la que se va a incorporar.",
-          "en": "Reduce speed and stop the vehicle before the pedestrian crossing.",
-          "ru": "Снизьте скорость и остановите транспортное средство перед пешеходным переходом."
+          "en": "Slightly decrease speed and look for approaching vehicles on the road you are entering.",
+          "ru": "Немного уменьшите скорость и посмотрите на приближающиеся автомобили на дороге, к которой вы собираетесь присоединиться."
         }
       },
       {
         "text": {
           "es": "Reducir la velocidad y detener el vehículo antes de la senda peatonal.",
-          "en": "Slightly decrease speed and look for approaching vehicles on the road you are entering.",
-          "ru": "Немного уменьшите скорость и посмотрите на приближающиеся автомобили на дороге, к которой вы собираетесь присоединиться."
+          "en": "Reduce speed and stop the vehicle before the pedestrian crossing.",
+          "ru": "Снизьте скорость и остановите транспортное средство перед пешеходным переходом.",
         },
         "correct": true
       },

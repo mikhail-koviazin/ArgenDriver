@@ -70,6 +70,13 @@ const en = {
           "Translation fixes",
         ]
       },
+      {
+        version: "1.0.2",
+        date: "28.10.2024",
+        list: [
+          "Translation fixes",
+        ]
+      },
     ] as ChangelogEntry[],
   },
   testScreen: {
