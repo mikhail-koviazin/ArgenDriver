@@ -44,15 +44,15 @@
       {
         "text": {
           "es": "Niños menores de 15 años.",
-          "en": "Young people and adults aged 15 to 34.",
-          "ru": "Молодые люди и взрослые в возрасте от 15 до 34 лет."
+          "en": "Children under 15 years old.",
+          "ru": "Дети младше 15 лет."
         }
       },
       {
         "text": {
           "es": "Jóvenes y adultos de 15 a 34 años.",
-          "en": "Children under 15 years old.",
-          "ru": "Дети младше 15 лет."
+          "en": "Young people and adults aged 15 to 34.",
+          "ru": "Молодые люди и взрослые в возрасте от 15 до 34 лет."
         },
         "correct": true
       },
@@ -351,15 +351,15 @@
       {
         "text": {
           "es": "Principio ético que establece que no debería existir ningún vehículo particular circulando por calles, ni avenidas urbanas; ya que son los causantes de las víctimas fatales en siniestros de tránsito.",
-          "en": "An ethical principle stating that no one should die or suffer permanent injuries in traffic accidents.",
-          "ru": "Этический принцип, который гласит, что никто не должен умирать или получать постоянные травмы в дорожных事故."
+          "en": "An ethical principle stating that no private vehicle should circulate on urban streets or avenues, as they are responsible for fatalities in traffic accidents.",
+          "ru": "Этический принцип, который утверждает, что никаких частных автомобилей не должно быть на городских улицах и проспектах, так как они являются причиной смертельных случаев в дорожных происшествиях."
         }
       },
       {
         "text": {
           "es": "Principio ético que establece que nadie debería morir ni sufrir lesiones permanentes en siniestros de tránsito.",
-          "en": "An ethical principle stating that no private vehicle should circulate on urban streets or avenues, as they are responsible for fatalities in traffic accidents.",
-          "ru": "Этический принцип, который утверждает, что никаких частных автомобилей не должно быть на городских улицах и проспектах, так как они являются причиной смертельных случаев в дорожных происшествиях."
+          "en": "An ethical principle stating that no one should die or suffer permanent injuries in traffic accidents.",
+          "ru": "Этический принцип, который гласит, что никто не должен умирать или получать постоянные травмы в дорожных происшествиях."
         },
         "correct": true
       },
@@ -3645,7 +3645,7 @@
         "text": {
           "es": "En ese mismo momento y ante la Autoridad de Control si ésta lo requiere.",
           "en": "At that same moment and before the Control Authority if required.",
-          "ru": "В тот же момент и перед органом контроля, если это требуется.",
+          "ru": "В тот же момент и перед органом контроля, если это требуется."
         }
       },
       {
@@ -5716,7 +5716,7 @@
         "text": {
           "es": "Sí, ya que a pesar de estar detenido, está en la vía de circulación y su atención no está dirigida al contexto.",
           "en": "Yes, because despite being stopped, it is in the traffic lane and their attention is not directed to the context.",
-          "ru": "Да, потому что, хотя и остановлено, это на дороге и внимание не направлено на контекст.",
+          "ru": "Да, потому что, хотя и остановлено, это на дороге и внимание не направлено на контекст."
         },
         "correct": true
       },
@@ -7971,7 +7971,7 @@
         "text": {
           "es": "Reducir la velocidad y detener el vehículo antes de la senda peatonal.",
           "en": "Reduce speed and stop the vehicle before the pedestrian crossing.",
-          "ru": "Снизьте скорость и остановите транспортное средство перед пешеходным переходом.",
+          "ru": "Снизьте скорость и остановите транспортное средство перед пешеходным переходом."
         },
         "correct": true
       },
@@ -13262,7 +13262,7 @@
         "text": {
           "es": "No, al reducir la velocidad, mayor es la proporción de agua en el asfalto.",
           "en": "No, by reducing speed, the proportion of water on the asphalt is greater.",
-          "ru": "Нет, при снижении скорости доля воды на асфальте больше.",
+          "ru": "Нет, при снижении скорости доля воды на асфальте больше."
         }
       },
       {
