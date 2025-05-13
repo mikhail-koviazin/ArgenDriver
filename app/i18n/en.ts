@@ -84,6 +84,13 @@ const en = {
           "Translation fixes",
         ]
       },
+      {
+        version: "1.0.4",
+        date: "13.05.2025",
+        list: [
+          "Translation fixes",
+        ]
+      },
     ] as ChangelogEntry[],
   },
   testScreen: {

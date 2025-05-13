@@ -1151,15 +1151,15 @@
       {
         "text": {
           "es": "Sí, únicamente si no compromete la visibilidad.",
-          "en": "Yes, as long as he is seated on an additional seat behind the driver.",
-          "ru": "Да, если он сидит на дополнительном сиденье за водителем."
+          "en": "Yes, only if it does not compromise visibility.",
+          "ru": "Да, только если это не мешает видимости."
         }
       },
       {
         "text": {
           "es": "Sí, mientras que esté ubicado en un asiento adicional detrás del conductor.",
-          "en": "Yes, only if it does not compromise visibility.",
-          "ru": "Да, только если это не мешает видимости."
+          "en": "Yes, as long as he is seated on an additional seat behind the driver.",
+          "ru": "Да, если он сидит на дополнительном сиденье за водителем."
         },
         "correct": true
       },
@@ -6611,15 +6611,15 @@
       {
         "text": {
           "es": "Avanzar si es que el vehículo que cruza lo hace lentamente porque la prioridad de paso está dada por la luz verde.",
-          "en": "Do not start crossing until the other vehicle has completed its crossing.",
-          "ru": "Не начинать пересечение, пока другое транспортное средство не завершит свое пересечение."
+          "en": "Advance if the crossing vehicle does so slowly because the right of way is given by the green light.",
+          "ru": "Продолжать, если пересекающее транспортное средство движется медленно, поскольку приоритетный проезд определяется зеленым светом."
         }
       },
       {
         "text": {
           "es": "No iniciar el cruce, hasta que el otro vehículo haya completado el suyo.",
-          "en": "Advance if the crossing vehicle does so slowly because the right of way is given by the green light.",
-          "ru": "Продолжать, если пересекающее транспортное средство движется медленно, поскольку приоритетный проезд определяется зеленым светом."
+          "en": "Do not start crossing until the other vehicle has completed its crossing.",
+          "ru": "Не начинать пересечение, пока другое транспортное средство не завершит свое пересечение."
         },
         "correct": true
       },
@@ -8450,7 +8450,7 @@
       },
       {
         "text": {
-          "es": "Sí, porque señalizó su maniobra.\t",
+          "es": "Sí, porque señalizó su maniobra.",
           "en": "Yes, because it signaled its maneuver.",
           "ru": "Да, потому что он подал сигнал о маневре."
         }
@@ -8477,15 +8477,15 @@
       {
         "text": {
           "es": "No. La prioridad es de los otros vehículos, independientemente si están detenidos o circulando.",
-          "en": "Yes, because the traffic is stopped and they must give way to him.",
-          "ru": "Да, потому что движение остановлено, и они должны пропустить его."
+          "en": "No. The priority is for the other vehicles, regardless of whether they are stationary or moving.",
+          "ru": "Нет. Приоритет отдается другим транспортным средствам, независимо от того, остановлены ли они или двигаются."
         }
       },
       {
         "text": {
           "es": "Sí, porque se encuentra el tránsito detenido y deben cederle el paso.",
-          "en": "No. The priority is for the other vehicles, regardless of whether they are stationary or moving.",
-          "ru": "Нет. Приоритет отдается другим транспортным средствам, независимо от того, остановлены ли они или двигаются."
+          "en": "Yes, because the traffic is stopped and they must give way to him.",
+          "ru": "Да, потому что движение остановлено, и они должны пропустить его."
         },
         "correct": true
       },
@@ -14685,15 +14685,15 @@
       {
         "text": {
           "es": "Para medir el grado de tonalidad debe efectuarse una prueba colorimétrica mediante un dispositivo portátil reglamentado debidamente.",
-          "en": "The vehicle's occupants must be distinguishable from a short distance.",
-          "ru": "Пассажиры автомобиля должны быть различимы на близком расстоянии."
+          "en": "To measure the degree of tinting, a colorimetric test must be carried out using a duly regulated portable device.",
+          "ru": "Для измерения степени тонирования необходимо провести колориметрический тест с использованием должным образом регулируемого портативного устройства."
         }
       },
       {
         "text": {
           "es": "Se deben distinguir los ocupantes del vehículo a corta distancia.",
-          "en": "To measure the degree of tinting, a colorimetric test must be carried out using a duly regulated portable device.",
-          "ru": "Для измерения степени тонирования необходимо провести колориметрический тест с использованием должным образом регулируемого портативного устройства."
+          "en": "The vehicle's occupants must be distinguishable from a short distance.",
+          "ru": "Пассажиры автомобиля должны быть различимы на близком расстоянии."
         },
         "correct": true
       },
