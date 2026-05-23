@@ -92,6 +92,16 @@ const en = {
           "Translation fixes",
         ]
       },
+      {
+        version: "1.1.0",
+        date: "23.05.2026",
+        list: [
+          "Major app refactoring",
+          "Extensive translation fixes",
+          "Old version of the app is available at:",
+          "https://old.argen-driver.koviazin.dev"
+        ]
+      },
     ] as ChangelogEntry[],
   },
   settingsScreen: {
