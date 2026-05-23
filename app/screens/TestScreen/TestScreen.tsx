@@ -54,6 +54,12 @@ export const TestScreen: FC<AppStackScreenProps<"Test">> = function TestScreen({
   const [answers, setAnswers] = useState<Answer[]>([])
 
   const scrollRef = useRef<ScrollView>(null)
+  const exitConfirmed = useRef(false)
+
+  const exitTest = () => {
+    exitConfirmed.current = true
+    navigate("Main")
+  }
 
   useEffect(() => {
     if (forceQuestion !== undefined) {
@@ -104,6 +110,7 @@ export const TestScreen: FC<AppStackScreenProps<"Test">> = function TestScreen({
   useEffect(
     () =>
       navigation.addListener("beforeRemove", (e: any) => {
+        if (exitConfirmed.current) return
         if (curQuestionNum === 0 && !answer) return
         e.preventDefault()
         setModalVisible(true)
@@ -215,7 +222,7 @@ export const TestScreen: FC<AppStackScreenProps<"Test">> = function TestScreen({
         animationType="fade"
         transparent={true}
         visible={modalVisible}
-        onRequestClose={() => navigate("Main")}
+        onRequestClose={exitTest}
       >
         <View style={$centeredView}>
           <View style={$modalView}>
@@ -238,7 +245,7 @@ export const TestScreen: FC<AppStackScreenProps<"Test">> = function TestScreen({
                 <Text>{selectedQuestions.length}</Text>
               </View>
             </View>
-            <Button onPress={() => navigate("Main")}>
+            <Button onPress={exitTest}>
               <Text tx="testScreen.resultModalCloseButton" />
             </Button>
           </View>
