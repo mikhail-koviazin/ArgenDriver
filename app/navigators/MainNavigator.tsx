@@ -1,7 +1,7 @@
 import { BottomTabScreenProps, createBottomTabNavigator } from "@react-navigation/bottom-tabs"
 import { CompositeScreenProps } from "@react-navigation/native"
-import React from "react"
-import { TextStyle, ViewStyle } from "react-native"
+import React, { useEffect } from "react"
+import { Platform, TextStyle, ViewStyle } from "react-native"
 import { useSafeAreaInsets } from "react-native-safe-area-context"
 import { Icon } from "../components"
 import { translate } from "../i18n"
@@ -9,37 +9,42 @@ import { StartTestScreen } from "../screens"
 import { colors, spacing, typography } from "../theme"
 import { AppStackParamList, AppStackScreenProps } from "./AppNavigator"
 import { ChangelogScreen } from "app/screens/Changelog/ChangelogScreen"
+import { SettingsScreen } from "app/screens/SettingsScreen/SettingsScreen"
+import { useStores } from "app/models"
 
-export type DemoTabParamList = {
+export type MainTabParamList = {
   StartTest: undefined
   Changelog: undefined
-  Test: { questionsCount: number; forceQuestion?: number; }
-  DemoShowroom: { queryIndex?: string; itemIndex?: string }
-  DemoDebug: undefined
-  DemoPodcastList: undefined
+  Settings: undefined
 }
 
-/**
- * Helper for automatically generating navigation prop types for each route.
- *
- * More info: https://reactnavigation.org/docs/typescript/#organizing-types
- */
-export type DemoTabScreenProps<T extends keyof DemoTabParamList> = CompositeScreenProps<
-  BottomTabScreenProps<DemoTabParamList, T>,
+export type MainTabScreenProps<T extends keyof MainTabParamList> = CompositeScreenProps<
+  BottomTabScreenProps<MainTabParamList, T>,
   AppStackScreenProps<keyof AppStackParamList>
 >
 
-const Tab = createBottomTabNavigator<DemoTabParamList>()
+const Tab = createBottomTabNavigator<MainTabParamList>()
 
-/**
- * This is the main navigator for the demo screens with a bottom tab bar.
- * Each tab is a stack navigator with its own set of screens.
- *
- * More info: https://reactnavigation.org/docs/bottom-tab-navigator/
- * @returns {JSX.Element} The rendered `DemoNavigator`.
- */
-export function DemoNavigator() {
+export function MainNavigator() {
   const { bottom } = useSafeAreaInsets()
+  const { settingsStore } = useStores()
+
+  useEffect(() => {
+    if (Platform.OS === "web") return
+
+    const applyAnalyticsConsent = async () => {
+      const firebase = (await import("@react-native-firebase/analytics")).firebase
+      firebase.analytics().setConsent({
+        analytics_storage: settingsStore.analyticsEnabled,
+        ad_storage: settingsStore.analyticsEnabled,
+        ad_user_data: settingsStore.analyticsEnabled,
+        ad_personalization: settingsStore.analyticsEnabled,
+      })
+      firebase.analytics().setAnalyticsCollectionEnabled(settingsStore.analyticsEnabled)
+    }
+
+    applyAnalyticsConsent()
+  }, [settingsStore.analyticsEnabled])
 
   return (
     <Tab.Navigator
@@ -57,7 +62,7 @@ export function DemoNavigator() {
         name="StartTest"
         component={StartTestScreen}
         options={{
-          tabBarLabel: translate("demoNavigator.startTestTab"),
+          tabBarLabel: translate("mainNavigator.startTestTab"),
           tabBarIcon: ({ focused }) => (
             <Icon icon="components" color={focused ? colors.tint : undefined} size={30} />
           ),
@@ -67,9 +72,19 @@ export function DemoNavigator() {
         name="Changelog"
         component={ChangelogScreen}
         options={{
-          tabBarLabel: translate("demoNavigator.changeLogTab"),
+          tabBarLabel: translate("mainNavigator.changeLogTab"),
           tabBarIcon: ({ focused }) => (
             <Icon icon="community" color={focused ? colors.tint : undefined} size={30} />
+          ),
+        }}
+      />
+      <Tab.Screen
+        name="Settings"
+        component={SettingsScreen}
+        options={{
+          tabBarLabel: translate("mainNavigator.settingsTab"),
+          tabBarIcon: ({ focused }) => (
+            <Icon icon="settings" color={focused ? colors.tint : undefined} size={30} />
           ),
         }}
       />

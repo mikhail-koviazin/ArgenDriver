@@ -10,9 +10,10 @@ const en = {
     reset: "RESET APP",
     traceTitle: "Error from %{name} stack",
   },
-  demoNavigator: {
+  mainNavigator: {
     startTestTab: "Test",
     changeLogTab: "Changelog",
+    settingsTab: "Settings",
   },
   startTestScreen: {
     title: "Start test",
@@ -92,6 +93,12 @@ const en = {
         ]
       },
     ] as ChangelogEntry[],
+  },
+  settingsScreen: {
+    title: "Settings",
+    languageLabel: "Interface language",
+    analyticsLabel: "Help improve the app",
+    analyticsDescription: "Send anonymous usage statistics",
   },
   testScreen: {
     header: "Question %{curQuestion}/%{count} (#%{num})",

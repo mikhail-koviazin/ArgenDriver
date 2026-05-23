@@ -1,8 +1,19 @@
-import { openComposer } from "react-native-email-link";
+/* eslint-disable react-native/no-inline-styles */
+import { openComposer } from "react-native-email-link"
 import React, { FC, useEffect, useLayoutEffect, useRef, useState } from "react"
-import { Image, ImageStyle, TextStyle, View, ViewStyle, Modal, Platform, Linking, ScrollView } from "react-native"
+import {
+  Image,
+  ImageStyle,
+  Linking,
+  Modal,
+  Platform,
+  ScrollView,
+  TextStyle,
+  View,
+  ViewStyle,
+} from "react-native"
 import { Button, Header, Icon, Screen, Text } from "app/components"
-import { DemoTabScreenProps } from "app/navigators/DemoNavigator"
+import { AppStackScreenProps } from "app/navigators/AppNavigator"
 import { colors, spacing } from "app/theme"
 import questions from "../../questions.json"
 import { Question } from "app/models/Question"
@@ -16,7 +27,7 @@ enum Answer {
   PASS = "PASS",
 }
 
-export const TestScreen: FC<DemoTabScreenProps<"Test">> = function TestScreen({
+export const TestScreen: FC<AppStackScreenProps<"Test">> = function TestScreen({
   navigation,
   route,
 }) {
@@ -28,32 +39,27 @@ export const TestScreen: FC<DemoTabScreenProps<"Test">> = function TestScreen({
 
   const [selectedQuestions, setSelectedQuestions] = useState<Question[]>([])
   const [curQuestionNum, setCurQuestionNum] = useState(0)
-  const [answer, setAnswer] = useState<number | undefined>(undefined);
-  const [answers, setAnswers] = useState<Answer[]>([]);
+  const [answer, setAnswer] = useState<number | undefined>(undefined)
+  const [answers, setAnswers] = useState<Answer[]>([])
 
-  const scrollRef = useRef<ScrollView>();
+  const scrollRef = useRef<ScrollView>(null)
 
   useEffect(() => {
-    // setSelectedQuestions([questions[77], questions[6]]);
-    // return;
-    if (forceQuestion) {
-      setSelectedQuestions([questions[forceQuestion]]);
-      return;
+    if (forceQuestion !== undefined) {
+      setSelectedQuestions([questions[forceQuestion]])
+      return
     }
-    const selectedQuestions = questions
+    const selected = questions
       .map((question, index) => (question ? { ...question, num: index } : question))
       .sort(() => Math.random() - 0.5)
       .slice(0, questionsCount)
-    setSelectedQuestions(selectedQuestions)
+    setSelectedQuestions(selected)
   }, [forceQuestion])
 
   useEffect(() => {
-    setLang("es");
-    setAnswer(undefined);
-    scrollRef.current?.scrollTo({
-      y: 0,
-      animated: false,
-    });
+    setLang("es")
+    setAnswer(undefined)
+    scrollRef.current?.scrollTo({ y: 0, animated: false })
   }, [curQuestionNum])
 
   const curQuestion = selectedQuestions[curQuestionNum]
@@ -66,7 +72,7 @@ export const TestScreen: FC<DemoTabScreenProps<"Test">> = function TestScreen({
           title={translate("testScreen.header", {
             curQuestion: curQuestionNum + 1,
             count: selectedQuestions.length,
-            num: curQuestion?.num
+            num: curQuestion?.num,
           })}
           leftIcon="back"
           onLeftPress={() => navigation.pop()}
@@ -76,61 +82,50 @@ export const TestScreen: FC<DemoTabScreenProps<"Test">> = function TestScreen({
     })
   }, [curQuestionNum, curQuestion, selectedQuestions])
 
-  useEffect(() =>
-    navigation.addListener("beforeRemove", (e: any) => {
-      if (curQuestionNum === 0 && !answer) {
-        return;
-      }
+  useEffect(
+    () =>
+      navigation.addListener("beforeRemove", (e: any) => {
+        if (curQuestionNum === 0 && !answer) return
+        e.preventDefault()
+        setModalVisible(true)
+      }),
+    [navigation, curQuestionNum, answer],
+  )
 
-      // Prevent default behavior of leaving the screen
-      e.preventDefault();
+  if (!curQuestion) return null
 
-      setModalVisible(true)
-    }),
-    [navigation, curQuestionNum, answer]
-  );
-
-  if (!curQuestion) {
-    return;
-  }
-
-  const imageLocalUri = curQuestion.img
-    // @ts-ignore
-    ? questionImages[curQuestion.img.split("/").pop()?.split(".")[0] as string]
-    : ""
+  const imageKey = curQuestion.img?.split("/").pop()?.split(".")[0]
+  const imageLocalUri = imageKey ? questionImages[imageKey as keyof typeof questionImages] : null
 
   return (
-      // @ts-ignore
-    <Screen preset="scroll" style={$container} contentContainerStyle={$innerContainer} safeAreaEdges={["bottom"]} ScrollViewProps={{alwaysBounceVertical: false, ref: scrollRef}}>
+    <Screen
+      preset="scroll"
+      style={$container}
+      contentContainerStyle={$innerContainer}
+      safeAreaEdges={["bottom"]}
+      // @ts-expect-error ScrollView ref not typed in Screen component
+      ScrollViewProps={{ alwaysBounceVertical: false, ref: scrollRef }}
+    >
       <Text preset="default" text={curQuestion.text[lang]} size="md" style={$question} />
 
-      <View style={{...$questionImageContainer, minHeight: imageLocalUri ? 200 : undefined}}>
-        {imageLocalUri ? <Image source={imageLocalUri} style={$questionImage} /> : undefined}
+      <View style={[$questionImageContainer, { minHeight: curQuestion.img ? 200 : undefined }]}>
+        {imageLocalUri ? <Image source={imageLocalUri} style={$questionImage} /> : null}
       </View>
 
       <View style={$prevNextContainer}>
         <Button
-            tx="testScreen.openErrorModalButton"
-            LeftAccessory={(props) => (
-                <Icon containerStyle={props.style} icon="ladybug" />
-            )}
-            onPress={() => {
-              setErrorModalVisible(true);
-            }}
-            style={$prevNextBtn}
+          tx="testScreen.openErrorModalButton"
+          LeftAccessory={(props) => <Icon containerStyle={props.style} icon="ladybug" />}
+          onPress={() => setErrorModalVisible(true)}
+          style={$prevNextBtn}
         />
         <Button
-            tx={lang !== "es" ? "testScreen.hideTranslationButton" : undefined}
-            LeftAccessory={(props) => (
-                <Icon containerStyle={props.style} icon="translation" />
-            )}
-            onPress={() => {
-              setLang(
-                  lang === "es"
-                      ? (i18n.locale.includes("ru") ? "ru" : "en")
-                      : "es")
-            }}
-            style={$prevNextBtn}
+          tx={lang !== "es" ? "testScreen.hideTranslationButton" : undefined}
+          LeftAccessory={(props) => <Icon containerStyle={props.style} icon="translation" />}
+          onPress={() =>
+            setLang(lang === "es" ? (i18n.locale.includes("ru") ? "ru" : "en") : "es")
+          }
+          style={$prevNextBtn}
         />
       </View>
 
@@ -140,8 +135,11 @@ export const TestScreen: FC<DemoTabScreenProps<"Test">> = function TestScreen({
             key={index}
             text={response.text[lang]}
             onPress={() => {
-              setAnswer(index);
-              setAnswers((answers) => [...answers, response.correct ? Answer.CORRECT : Answer.INCORRECT]);
+              setAnswer(index)
+              setAnswers((prev) => [
+                ...prev,
+                response.correct ? Answer.CORRECT : Answer.INCORRECT,
+              ])
             }}
             disabled={answer !== undefined}
             style={
@@ -157,29 +155,12 @@ export const TestScreen: FC<DemoTabScreenProps<"Test">> = function TestScreen({
         ))}
       </View>
 
-      {/* <View style={$prevNextContainer}> */}
-      {/*   <Button */}
-      {/*     tx="testScreen.prevButton" */}
-      {/*     onPress={() => setCurQuestionNum((val) => val - 1)} */}
-      {/*     disabled={curQuestionNum === 0} */}
-      {/*     style={$prevNextBtn} */}
-      {/*   /> */}
-
-      {/*   <Button */}
-      {/*     tx="testScreen.nextButton" */}
-      {/*     onPress={() => setCurQuestionNum((val) => val + 1)} */}
-      {/*     disabled={curQuestionNum === Math.min(questionsCount - 1, questions.length)} */}
-      {/*     style={$prevNextBtn} */}
-      {/*   /> */}
-      {/* </View> */}
-
-
       {typeof answer === "undefined" && (
         <Button
           tx="testScreen.passButton"
           onPress={() => {
-            setAnswer(-1);
-            setAnswers((answers) => [...answers, Answer.PASS]);
+            setAnswer(-1)
+            setAnswers((prev) => [...prev, Answer.PASS])
           }}
           style={{
             backgroundColor: colors.palette.accent100,
@@ -215,43 +196,30 @@ export const TestScreen: FC<DemoTabScreenProps<"Test">> = function TestScreen({
         animationType="fade"
         transparent={true}
         visible={modalVisible}
-        onRequestClose={() => {
-          navigate("StartTest")
-        }}>
+        onRequestClose={() => navigate("Main")}
+      >
         <View style={$centeredView}>
           <View style={$modalView}>
             <Text preset="subheading" tx="testScreen.resultModalTitle" />
             <View style={$resultsView}>
               <View style={$resultBlock}>
                 <Text tx="testScreen.resultModalCorrectAnswersLabel" />
-                <Text>
-                  {answers.filter((answer) => answer === Answer.CORRECT).length}
-                </Text>
+                <Text>{answers.filter((a) => a === Answer.CORRECT).length}</Text>
               </View>
               <View style={$resultBlock}>
                 <Text tx="testScreen.resultModalIncorrectAnswersLabel" />
-                <Text>
-                  {answers.filter((answer) => answer === Answer.INCORRECT).length}
-                </Text>
+                <Text>{answers.filter((a) => a === Answer.INCORRECT).length}</Text>
               </View>
               <View style={$resultBlock}>
                 <Text tx="testScreen.resultModalPassedAnswersLabel" />
-                <Text>
-                  {answers.filter((answer) => answer === Answer.PASS).length}
-                </Text>
+                <Text>{answers.filter((a) => a === Answer.PASS).length}</Text>
               </View>
               <View style={$resultBlock}>
                 <Text tx="testScreen.resultModalTotalAnswersLabel" />
-                <Text>
-                  {selectedQuestions.length}
-                </Text>
+                <Text>{selectedQuestions.length}</Text>
               </View>
             </View>
-            <Button
-              onPress={() =>
-                navigate("StartTest")
-              }
-            >
+            <Button onPress={() => navigate("Main")}>
               <Text tx="testScreen.resultModalCloseButton" />
             </Button>
           </View>
@@ -262,74 +230,65 @@ export const TestScreen: FC<DemoTabScreenProps<"Test">> = function TestScreen({
         animationType="fade"
         transparent={true}
         visible={errorModalVisible}
-        onRequestClose={() => {
-          setErrorModalVisible(false)
-        }}>
+        onRequestClose={() => setErrorModalVisible(false)}
+      >
         <View style={$centeredView}>
           <View style={$modalView}>
             <Text preset="subheading" tx="testScreen.errorModalTitle" />
-            {
-              ([
-                    [
-                        "testScreen.errorModalIncorrectTranslation",
-                        "[ArgenDriver-BUG]",
-                        `[${curQuestion.num}] Incorrect translation\r\n\r\nQuestion:\r\n - ${curQuestion.text.es}\r\n - ${curQuestion.text[lang]}\r\n\r\n${curQuestion.responses.map((response) => ` - ${response.text.es}\r\n - ${response.text[lang]}`).join("\r\n\r\n")}\r\n\r\nYou may write more details here...`
-                    ],
-                    [
-                        "testScreen.errorModalIncorrectImage",
-                        "[ArgenDriver-BUG]",
-                        `[${curQuestion.num}] Incorrect image\r\n\r\nQuestion:\r\n - ${curQuestion.text.es}\r\n\r\nImage: ${curQuestion.img}\r\n\r\nYou may write more details here...`
-                    ],
-                    [
-                        "testScreen.errorModalIncorrectCorrectAnswerSpanish",
-                        "[ArgenDriver-BUG]",
-                        `[${curQuestion.num}] Incorrect correct answer (Spanish)\r\n\r\nQuestion:\r\n - ${curQuestion.text.es}\r\n\r\n${curQuestion.responses.map((response) => ` - ${response.text.es}\r\n - ${response.correct ? "correct" : "incorrect"}`).join("\r\n\r\n")}\r\n\r\nYou may write more details here...`
-                    ],
-                    [
-                        "testScreen.errorModalIncorrectOther",
-                        "[ArgenDriver-BUG]",
-                        `[${curQuestion.num}] Other\r\n\r\nPlease describe the issue here (don't delete question number above)`
-                    ],
-              ] as const).map(([tx, subject, body], i) => (
-                <Button
-                  key={i}
-                  tx={tx}
-                  onPress={() => {
-                    if (Platform.OS === "web") {
-                        // const hiddenElement = document.createElement('a');
-                        // hiddenElement.href = `mailto:mikhail.koviazin+argen-driver-bug@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body.replaceAll(/\?/g, "¿"))}`;
-                        // console.log(hiddenElement.href);
-                        // hiddenElement.target = '_blank';
-                        // hiddenElement.click();
-                        Linking.openURL(`mailto:mikhail.koviazin+argen-driver-bug@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body.replaceAll(/\?/g, "¿"))}`);
-                    } else {
-                      openComposer({
-                        to: "mikhail.koviazin+argen-driver-bug@gmail.com",
-                        subject,
-                        body: body.replaceAll(/\?/g, "¿")
-                      });
-                    }
-                    setErrorModalVisible(false);
-                  }}
-                />
-              ))
-            }
-            <Button
-                tx="testScreen.errorModalCloseButton"
+            {(
+              [
+                [
+                  "testScreen.errorModalIncorrectTranslation",
+                  "[ArgenDriver-BUG]",
+                  `[${curQuestion.num}] Incorrect translation\r\n\r\nQuestion:\r\n - ${curQuestion.text.es}\r\n - ${curQuestion.text[lang]}\r\n\r\n${curQuestion.responses.map((r) => ` - ${r.text.es}\r\n - ${r.text[lang]}`).join("\r\n\r\n")}\r\n\r\nYou may write more details here...`,
+                ],
+                [
+                  "testScreen.errorModalIncorrectImage",
+                  "[ArgenDriver-BUG]",
+                  `[${curQuestion.num}] Incorrect image\r\n\r\nQuestion:\r\n - ${curQuestion.text.es}\r\n\r\nImage: ${curQuestion.img}\r\n\r\nYou may write more details here...`,
+                ],
+                [
+                  "testScreen.errorModalIncorrectCorrectAnswerSpanish",
+                  "[ArgenDriver-BUG]",
+                  `[${curQuestion.num}] Incorrect correct answer (Spanish)\r\n\r\nQuestion:\r\n - ${curQuestion.text.es}\r\n\r\n${curQuestion.responses.map((r) => ` - ${r.text.es}\r\n - ${r.correct ? "correct" : "incorrect"}`).join("\r\n\r\n")}\r\n\r\nYou may write more details here...`,
+                ],
+                [
+                  "testScreen.errorModalIncorrectOther",
+                  "[ArgenDriver-BUG]",
+                  `[${curQuestion.num}] Other\r\n\r\nPlease describe the issue here (don't delete question number above)`,
+                ],
+              ] as const
+            ).map(([tx, subject, body], i) => (
+              <Button
+                key={i}
+                tx={tx}
                 onPress={() => {
-                  setErrorModalVisible(false);
+                  const encodedBody = body.replaceAll(/\?/g, "¿")
+                  if (Platform.OS === "web") {
+                    Linking.openURL(
+                      `mailto:mikhail.koviazin+argen-driver-bug@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(encodedBody)}`,
+                    )
+                  } else {
+                    openComposer({
+                      to: "mikhail.koviazin+argen-driver-bug@gmail.com",
+                      subject,
+                      body: encodedBody,
+                    })
+                  }
+                  setErrorModalVisible(false)
                 }}
-            />
+              />
+            ))}
+            <Button tx="testScreen.errorModalCloseButton" onPress={() => setErrorModalVisible(false)} />
           </View>
         </View>
       </Modal>
-
     </Screen>
   )
 }
 
 const $container: ViewStyle = {
-  flex: 1
+  flex: 1,
 }
 
 const $innerContainer: ViewStyle = {
@@ -337,7 +296,7 @@ const $innerContainer: ViewStyle = {
   paddingVertical: spacing.sm,
   display: "flex",
   gap: spacing.md,
-  flexGrow: 1
+  flexGrow: 1,
 }
 
 const $question: TextStyle = {
@@ -364,7 +323,7 @@ const $prevNextContainer: ViewStyle = {
 }
 
 const $prevNextBtn: ViewStyle = {
-  width: "48%"
+  width: "48%",
 }
 
 const $answersContainer: ViewStyle = {
@@ -383,39 +342,36 @@ const $incorrectAnswerBtn: ViewStyle = {
 }
 
 const $centeredView: ViewStyle = {
-  backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  backgroundColor: "rgba(0, 0, 0, 0.5)",
   flex: 1,
-  justifyContent: 'center',
-  alignItems: 'center',
+  justifyContent: "center",
+  alignItems: "center",
 }
 
 const $modalView: ViewStyle = {
-  backgroundColor: 'white',
+  backgroundColor: "white",
   borderRadius: 8,
   paddingVertical: spacing.xl,
   paddingHorizontal: spacing.lg,
-  shadowColor: '#000',
-  shadowOffset: {
-    width: 0,
-    height: 4,
-  },
+  shadowColor: "#000",
+  shadowOffset: { width: 0, height: 4 },
   shadowOpacity: 0.25,
   shadowRadius: 4,
   elevation: 5,
-  display: 'flex',
-  flexDirection: 'column',
+  display: "flex",
+  flexDirection: "column",
   gap: spacing.xl,
 }
 
 const $resultsView: ViewStyle = {
-  display: 'flex',
-  flexDirection: 'column',
+  display: "flex",
+  flexDirection: "column",
   gap: spacing.md,
 }
 
 const $resultBlock: ViewStyle = {
-  display: 'flex',
-  flexDirection: 'row',
-  justifyContent: 'space-between',
+  display: "flex",
+  flexDirection: "row",
+  justifyContent: "space-between",
   gap: spacing.sm,
 }
