@@ -27,6 +27,18 @@ enum Answer {
   PASS = "PASS",
 }
 
+function prefetchQuestionImages(qs: Question[]) {
+  qs.forEach((q) => {
+    const key = q.img?.split("/").pop()?.split(".")[0]
+    const source = key ? questionImages[key as keyof typeof questionImages] : null
+    if (!source) return
+    try {
+      const { uri } = Image.resolveAssetSource(source)
+      if (uri) Image.prefetch(uri)
+    } catch {}
+  })
+}
+
 export const TestScreen: FC<AppStackScreenProps<"Test">> = function TestScreen({
   navigation,
   route,
@@ -46,7 +58,9 @@ export const TestScreen: FC<AppStackScreenProps<"Test">> = function TestScreen({
 
   useEffect(() => {
     if (forceQuestion !== undefined) {
-      setSelectedQuestions([questions[forceQuestion]])
+      const qs = [questions[forceQuestion] as Question]
+      setSelectedQuestions(qs)
+      prefetchQuestionImages(qs)
       return
     }
     const selected = questions
@@ -54,7 +68,13 @@ export const TestScreen: FC<AppStackScreenProps<"Test">> = function TestScreen({
       .sort(() => Math.random() - 0.5)
       .slice(0, questionsCount)
     setSelectedQuestions(selected)
+    prefetchQuestionImages(selected)
   }, [forceQuestion])
+
+  useEffect(() => {
+    if (selectedQuestions.length === 0) return
+    prefetchQuestionImages(selectedQuestions.slice(curQuestionNum + 1, curQuestionNum + 4))
+  }, [curQuestionNum, selectedQuestions])
 
   useEffect(() => {
     setLang("es")
