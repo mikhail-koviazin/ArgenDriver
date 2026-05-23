@@ -8,7 +8,7 @@ export type QuestionResponse = {
 }
 
 export type Question = {
-  num: number;
+  num?: number;
   text: {
     es: string;
     ru: string;

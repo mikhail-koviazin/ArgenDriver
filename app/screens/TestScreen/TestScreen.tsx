@@ -15,10 +15,9 @@ import {
 import { Button, Header, Icon, Screen, Text } from "app/components"
 import { AppStackScreenProps } from "app/navigators/AppNavigator"
 import { colors, spacing } from "app/theme"
-import questions from "../../questions.json"
+import { questions, questionImages } from "argendriver-data"
 import { Question } from "app/models/Question"
-import { questionImages } from "app/screens/TestScreen/question_images/questionImages"
-import { i18n, translate } from "app/i18n"
+import { i18n, translate, TxKeyPath } from "app/i18n"
 import { navigate } from "app/navigators"
 
 enum Answer {
@@ -258,30 +257,34 @@ export const TestScreen: FC<AppStackScreenProps<"Test">> = function TestScreen({
             {(
               [
                 [
-                  "testScreen.errorModalIncorrectTranslation",
+                  "testScreen.errorModalIncorrectTranslation" as const,
                   "[ArgenDriver-BUG]",
                   `[${curQuestion.num}] Incorrect translation\r\n\r\nQuestion:\r\n - ${curQuestion.text.es}\r\n - ${curQuestion.text[lang]}\r\n\r\n${curQuestion.responses.map((r) => ` - ${r.text.es}\r\n - ${r.text[lang]}`).join("\r\n\r\n")}\r\n\r\nYou may write more details here...`,
                 ],
+                ...(curQuestion.img
+                  ? [
+                      [
+                        "testScreen.errorModalIncorrectImage" as const,
+                        "[ArgenDriver-BUG]",
+                        `[${curQuestion.num}] Incorrect image\r\n\r\nQuestion:\r\n - ${curQuestion.text.es}\r\n\r\nImage: ${curQuestion.img}\r\n\r\nYou may write more details here...`,
+                      ],
+                    ]
+                  : []),
                 [
-                  "testScreen.errorModalIncorrectImage",
-                  "[ArgenDriver-BUG]",
-                  `[${curQuestion.num}] Incorrect image\r\n\r\nQuestion:\r\n - ${curQuestion.text.es}\r\n\r\nImage: ${curQuestion.img}\r\n\r\nYou may write more details here...`,
-                ],
-                [
-                  "testScreen.errorModalIncorrectCorrectAnswerSpanish",
+                  "testScreen.errorModalIncorrectCorrectAnswerSpanish" as const,
                   "[ArgenDriver-BUG]",
                   `[${curQuestion.num}] Incorrect correct answer (Spanish)\r\n\r\nQuestion:\r\n - ${curQuestion.text.es}\r\n\r\n${curQuestion.responses.map((r) => ` - ${r.text.es}\r\n - ${r.correct ? "correct" : "incorrect"}`).join("\r\n\r\n")}\r\n\r\nYou may write more details here...`,
                 ],
                 [
-                  "testScreen.errorModalIncorrectOther",
+                  "testScreen.errorModalIncorrectOther" as const,
                   "[ArgenDriver-BUG]",
                   `[${curQuestion.num}] Other\r\n\r\nPlease describe the issue here (don't delete question number above)`,
                 ],
-              ] as const
+              ]
             ).map(([tx, subject, body], i) => (
               <Button
                 key={i}
-                tx={tx}
+                tx={tx as TxKeyPath}
                 onPress={() => {
                   const encodedBody = body.replaceAll(/\?/g, "¿")
                   if (Platform.OS === "web") {
