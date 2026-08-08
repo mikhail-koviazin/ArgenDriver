@@ -89,7 +89,15 @@ const en = {
     title: "Settings",
     languageLabel: "Interface language",
     analyticsLabel: "Help improve the app",
-    analyticsDescription: "Send anonymous usage statistics",
+    analyticsDescription: "Send usage statistics. No personal data, no advertising.",
+  },
+  telemetryPrompt: {
+    title: "Help improve the app?",
+    body: "The app can send which screens you open and how tests go, so I can see which questions trip people up and fix what is worth fixing.",
+    details:
+      "Never any personal data and never anything you type. No advertising. You can change this at any time in Settings.",
+    accept: "Sure, send statistics",
+    decline: "No, thanks",
   },
   testScreen: {
     header: "Question %{curQuestion}/%{count} (#%{num})",

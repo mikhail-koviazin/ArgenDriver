@@ -12,6 +12,7 @@ import { useFonts } from "expo-font"
 import React from "react"
 import { initialWindowMetrics, SafeAreaProvider } from "react-native-safe-area-context"
 import * as Linking from "expo-linking"
+import { TelemetryConsentPrompt } from "./components"
 import { useInitialRootStore, useStores } from "./models"
 import { AppNavigator, useNavigationPersistence } from "./navigators"
 import { ErrorBoundary } from "./screens/ErrorScreen/ErrorBoundary"
@@ -55,6 +56,9 @@ function App(props: AppProps) {
   const { settingsStore } = useStores()
   const { rehydrated } = useInitialRootStore(() => {
     setLanguage(settingsStore.language)
+    // Anyone already opted in did so from the settings toggle, before the prompt existed.
+    // They have made their choice and should not be asked again.
+    if (settingsStore.analyticsEnabled) settingsStore.markAnalyticsChoiceMade()
     // Applied here rather than in an effect: the navigator must not mount before the stored
     // choice is known, or the first screen view of the session races the consent and is dropped.
     setTelemetryEnabled(settingsStore.analyticsEnabled)
@@ -79,6 +83,7 @@ function App(props: AppProps) {
           onReady={onNavigationReady}
           onStateChange={onNavigationStateChange}
         />
+        <TelemetryConsentPrompt />
       </ErrorBoundary>
     </SafeAreaProvider>
   )
