@@ -1,164 +1,68 @@
-# Welcome to your new ignited app!
+# ArgenDriver
 
-[![CircleCI](https://circleci.com/gh/infinitered/ignite.svg?style=svg)](https://circleci.com/gh/infinitered/ignite)
+Practice app for the Argentine driving theory exam. Questions are shown in the original Spanish, with a translation to Russian or English one tap away, so you learn the wording you will actually meet on the exam instead of a paraphrase of it.
 
-## The latest and greatest boilerplate for Infinite Red opinions
+**[argen-driver.koviazin.dev](https://argen-driver.koviazin.dev)** - runs in the browser, no install needed. Also builds as an Android and iOS app.
 
-This is the boilerplate that [Infinite Red](https://infinite.red) uses as a way to test bleeding-edge changes to our React Native stack.
+## What it does
 
-Currently includes:
+- Practice runs of 20, 40 or 80 questions drawn at random from the full bank
+- Every question in Spanish, English and Russian; the translation is hidden by default and revealed per question
+- Immediate feedback on each answer, with a summary at the end
+- Ability to skip a question rather than guess
+- Works fully offline: questions and images are bundled, nothing is fetched at runtime
+- Report a wrong translation, image or answer key straight from the question
+- Interface in English or Russian
+- Changelog inside the app
 
-- React Native
-- React Navigation
-- MobX State Tree
-- TypeScript
-- And more!
+## Running it
 
-## Quick Start
-
-The Ignite boilerplate project's structure will look similar to this:
-
-```
-ignite-project
-├── app
-│   ├── components
-│   ├── config
-│   ├── i18n
-│   ├── models
-│   ├── navigators
-│   ├── screens
-│   ├── services
-│   ├── theme
-│   ├── utils
-│   └── app.tsx
-├── assets
-│   ├── icons
-│   └── images
-├── test
-│   ├── __snapshots__
-│   ├── mockFile.ts
-│   └── setup.ts
-├── README.md
-├── android
-│   ├── app
-│   ├── build.gradle
-│   ├── gradle
-│   ├── gradle.properties
-│   ├── gradlew
-│   ├── gradlew.bat
-│   ├── keystores
-│   └── settings.gradle
-├── ignite
-│   └── templates
-|       |── app-icon
-│       ├── component
-│       ├── model
-│       ├── navigator
-│       └── screen
-├── index.js
-├── ios
-│   ├── IgniteProject
-│   ├── IgniteProject-tvOS
-│   ├── IgniteProject-tvOSTests
-│   ├── IgniteProject.xcodeproj
-│   └── IgniteProjectTests
-├── .env
-└── package.json
-
+```bash
+yarn install
+yarn web          # browser
+yarn android      # Android device or emulator
+yarn ios          # iOS simulator (macOS only)
+yarn start        # Expo dev server, pick a platform from there
 ```
 
-### ./app directory
+Checks:
 
-Included in an Ignite boilerplate project is the `app` directory. This is a directory you would normally have to create when using vanilla React Native.
-
-The inside of the `app` directory looks similar to the following:
-
-```
-app
-├── components
-├── config
-├── i18n
-├── models
-├── navigators
-├── screens
-├── services
-├── theme
-├── utils
-└── app.tsx
+```bash
+yarn compile      # TypeScript
+yarn lint         # ESLint and Prettier
+yarn test         # Jest
 ```
 
-**components**
-This is where your reusable components live which help you build your screens.
+Deploying the web build to GitHub Pages is `yarn deploy`.
 
-**i18n**
-This is where your translations will live if you are using `react-native-i18n`.
+## How it is put together
 
-**models**
-This is where your app's models will live. Each model has a directory which will contain the `mobx-state-tree` model file, test file, and any other supporting files like actions, types, etc.
-
-**navigators**
-This is where your `react-navigation` navigators will live.
-
-**screens**
-This is where your screen components will live. A screen is a React component which will take up the entire screen and be part of the navigation hierarchy. Each screen will have a directory containing the `.tsx` file, along with any assets or other helper files.
-
-**services**
-Any services that interface with the outside world will live here (think REST APIs, Push Notifications, etc.).
-
-**theme**
-Here lives the theme for your application, including spacing, colors, and typography.
-
-**utils**
-This is a great place to put miscellaneous helpers and utilities. Things like date helpers, formatters, etc. are often found here. However, it should only be used for things that are truly shared across your application. If a helper or utility is only used by a specific component or model, consider co-locating your helper with that component or model.
-
-**app.tsx** This is the entry point to your app. This is where you will find the main App component which renders the rest of the application.
-
-### ./assets directory
-
-This directory is designed to organize and store various assets, making it easy for you to manage and use them in your application. The assets are further categorized into subdirectories, including `icons` and `images`:
+Expo (SDK 51) and React Native, one codebase for web, Android and iOS. React Navigation for a bottom-tab layout inside a native stack, MobX State Tree for settings persisted through AsyncStorage, i18n-js for the interface, Firebase for analytics and crash reporting.
 
 ```
-assets
-├── icons
-└── images
+app/
+  components/    UI primitives
+  i18n/          interface strings, EN and RU
+  models/        MobX State Tree stores
+  navigators/    navigation and screen tracking
+  screens/       StartTest, Test, Changelog, Settings, Error
+  services/      telemetry
+  theme/         colours, fonts, spacing
+docs/            design notes
 ```
 
-**icons**
-This is where your icon assets will live. These icons can be used for buttons, navigation elements, or any other UI components. The recommended format for icons is PNG, but other formats can be used as well.
+Questions and their images live in a separate repository, [ArgenDriver-Data](https://github.com/mikhail-koviazin/ArgenDriver-Data), pulled in as a dependency. Content fixes land there and do not clutter this repository's history.
 
-Ignite comes with a built-in `Icon` component. You can find detailed usage instructions in the [docs](https://github.com/infinitered/ignite/blob/master/docs/Components-Icon.md).
+## Privacy
 
-**images**
-This is where your images will live, such as background images, logos, or any other graphics. You can use various formats such as PNG, JPEG, or GIF for your images.
+Analytics and crash reporting are off until you switch them on in Settings. Nothing is sent before that, and nothing personal is sent after: no identifiers, no text you typed. See [docs/telemetry.md](docs/telemetry.md) for the exact list of events and for how to configure Firebase when building yourself. Without that configuration the app builds and runs normally, just without telemetry.
 
-Another valuable built-in component within Ignite is the `AutoImage` component. You can find detailed usage instructions in the [docs](https://github.com/infinitered/ignite/blob/master/docs/Components-AutoImage.md).
+## Found a bad question?
 
-How to use your `icon` or `image` assets:
+Use the ladybug button on the question itself. It opens a pre-filled email with the question number and its text, which is far easier to act on than a description from memory.
 
-```
-import { Image } from 'react-native';
+## Author
 
-const MyComponent = () => {
-  return (
-    <Image source={require('../assets/images/my_image.png')} />
-  );
-};
-```
+Mikhail Koviazin, <mikhail.koviazin@gmail.com>
 
-### ./ignite directory
-
-The `ignite` directory stores all things Ignite, including CLI and boilerplate items. Here you will find templates you can customize to help you get started with React Native.
-
-### ./test directory
-
-This directory will hold your Jest configs and mocks.
-
-## Running Maestro end-to-end tests
-
-Follow our [Maestro Setup](https://ignitecookbook.com/docs/recipes/MaestroSetup) recipe from the [Ignite Cookbook](https://ignitecookbook.com/)!
-
-## Previous Boilerplates
-
-- [2018 aka Bowser](https://github.com/infinitered/ignite-bowser)
-- [2017 aka Andross](https://github.com/infinitered/ignite-andross)
-- [2016 aka Ignite 1.0](https://github.com/infinitered/ignite-ir-boilerplate-2016)
+Built on the [Ignite](https://github.com/infinitered/ignite) boilerplate.

@@ -1,7 +1,17 @@
 {
   "name": "argen-driver",
-  "version": "0.0.1",
+  "version": "1.1.0",
   "private": true,
+  "description": "Practice app for the Argentine driving theory exam, in Spanish with Russian and English translations",
+  "author": "Mikhail Koviazin <mikhail.koviazin@gmail.com>",
+  "homepage": "https://argen-driver.koviazin.dev",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mikhail-koviazin/ArgenDriver.git"
+  },
+  "bugs": {
+    "email": "mikhail.koviazin+argen-driver-bug@gmail.com"
+  },
   "main": "expo/AppEntry.js",
   "scripts": {
     "compile": "tsc --noEmit -p . --pretty",
