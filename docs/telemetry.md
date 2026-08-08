@@ -77,7 +77,7 @@ reportCrash(error: Error, type?: ErrorType): void
 | `GoogleService-Info.plist` | там же, iOS-приложение | iOS-сборка |
 | `.env` | скопировать `.env.example`, заполнить из Web app -> SDK setup | веб-сборка |
 
-Все три в `.gitignore`. Пути к нативным файлам прописаны в `app.json`, веб читает `.env` через `EXPO_PUBLIC_*` (Expo подставляет их на этапе сборки, см. `webConfig.ts`).
+Все три в `.gitignore`. Веб читает `.env` через `EXPO_PUBLIC_*` (Expo подставляет их на этапе сборки, см. `webConfig.ts`), нативные пути разрешает `app.config.ts`.
 
 Быстрый способ достать заново, если CLI авторизован:
 
@@ -88,8 +88,27 @@ firebase apps:sdkconfig IOS <appId> --out GoogleService-Info.plist
 firebase apps:sdkconfig WEB <appId>          # значения для .env
 ```
 
-Без этих файлов приложение собирается и работает нормально, телеметрия просто молча выключена. Для CI и EAS-сборок значения кладутся в EAS secrets (файлы - как file secrets, `.env` - как переменные окружения), а не в репозиторий.
+### Как это разрешается при сборке
 
-Отдельно стоит ограничить сами ключи в Google Cloud Console: Android - по package name и SHA-1, веб - по HTTP-референеру. Тогда утечка ключа перестает что-либо значить.
+`app.config.ts` ищет нативный конфиг сначала в переменных `GOOGLE_SERVICES_JSON` и `GOOGLE_SERVICES_PLIST`, потом в корне репозитория. Плагины `@react-native-firebase/app` и `@react-native-firebase/crashlytics` подключаются **только если файл нашелся**: сам плагин падает на отсутствующем конфиге, а свежий клон репозитория должен собираться без всякого Firebase. Если файла нет, в лог уходит предупреждение и сборка идет дальше с выключенной телеметрией.
 
-Плагины `@react-native-firebase/app` и `@react-native-firebase/crashlytics` подключены в `app.json`; для iOS там же выставлен `useFrameworks: "static"`, без него Firebase не собирается. После изменения этих настроек нужен `yarn prebuild:clean`.
+Поэтому же плагины и пути живут в `app.config.ts`, а не в `app.json`: в статическом конфиге их не сделать условными. В `app.json` остался только `useFrameworks: "static"` для iOS, без него Firebase не собирается. После правок в этих настройках нужен `yarn prebuild:clean`.
+
+### EAS
+
+EAS отдает сборщику только закоммиченные файлы, поэтому нативные конфиги надо завести как переменные типа file, а веб-значения как обычные переменные:
+
+```bash
+eas env:create --scope project --name GOOGLE_SERVICES_JSON  --type file --value ./google-services.json
+eas env:create --scope project --name GOOGLE_SERVICES_PLIST --type file --value ./GoogleService-Info.plist
+```
+
+EAS кладет файл во временный путь и передает этот путь в переменной, что `app.config.ts` и ожидает. Веб через EAS не собирается (он едет в Vercel), так что `EXPO_PUBLIC_*` там не нужны.
+
+### Vercel
+
+Веб-прод собирается в Vercel, а `.env` в репозиторий не попадает, поэтому те же семь `EXPO_PUBLIC_FIREBASE_*` заведены в переменных окружения проекта `argen-driver` (Production). Значения подставляются на этапе сборки, так что после их изменения нужен redeploy - сам по себе Vercel не пересоберет. Preview-окружение намеренно оставлено без них: тестовые заходы не пачкают статистику.
+
+### Ограничение ключей
+
+Стоит ограничить сами ключи в Google Cloud Console -> APIs & Services -> Credentials: Android-ключ по package name `com.argendriver` и SHA-1 подписи, веб-ключ по HTTP-референеру `argen-driver.koviazin.dev`. Тогда утечка ключа перестает что-либо значить.

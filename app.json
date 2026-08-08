@@ -5,7 +5,7 @@
     "name": "ArgenDriver",
     "slug": "argen-driver",
     "scheme": "argen-driver",
-    "version": "1.0.0",
+    "version": "1.2.0",
     "extra": {
       "eas": {
         "projectId": "688f71b0-0f5e-4887-b1b6-2a4af317449e"
@@ -31,7 +31,6 @@
     "android": {
       "icon": "./assets/images/app-icon-android-legacy.png",
       "package": "com.argendriver",
-      "googleServicesFile": "./google-services.json",
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/app-icon-android-adaptive-foreground.png",
         "backgroundImage": "./assets/images/app-icon-android-adaptive-background.png"
@@ -46,7 +45,6 @@
       "icon": "./assets/images/app-icon-ios.png",
       "supportsTablet": true,
       "bundleIdentifier": "com.argendriver",
-      "googleServicesFile": "./GoogleService-Info.plist",
       "splash": {
         "image": "./assets/images/splash-logo-ios-mobile.png",
         "tabletImage": "./assets/images/splash-logo-ios-tablet.png",
@@ -78,9 +76,7 @@
         }
       ],
       "expo-font",
-      "react-native-email-link",
-      "@react-native-firebase/app",
-      "@react-native-firebase/crashlytics"
+      "react-native-email-link"
     ],
     "experiments": {
       "tsconfigPaths": true
