@@ -9,7 +9,7 @@ import "./utils/gestureHandler"
 import "./i18n"
 import "./utils/ignoreWarnings"
 import { useFonts } from "expo-font"
-import React from "react"
+import React, { useEffect } from "react"
 import { initialWindowMetrics, SafeAreaProvider } from "react-native-safe-area-context"
 import * as Linking from "expo-linking"
 import { useInitialRootStore, useStores } from "./models"
@@ -19,6 +19,7 @@ import * as storage from "./utils/storage"
 import { customFontsToLoad } from "./theme"
 import Config from "./config"
 import { setLanguage } from "./i18n"
+import { setTelemetryEnabled } from "./services/telemetry"
 
 export const NAVIGATION_PERSISTENCE_KEY = "NAVIGATION_STATE"
 
@@ -55,6 +56,12 @@ function App(props: AppProps) {
     setLanguage(settingsStore.language)
     setTimeout(hideSplashScreen, 500)
   })
+
+  // The stored choice is only known after rehydration. Later changes are applied by
+  // SettingsScreen itself, so this runs once per launch.
+  useEffect(() => {
+    if (rehydrated) setTelemetryEnabled(settingsStore.analyticsEnabled)
+  }, [rehydrated])
 
   if (!rehydrated || !isNavigationStateRestored || (!areFontsLoaded && !fontLoadError)) {
     return null

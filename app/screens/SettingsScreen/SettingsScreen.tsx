@@ -7,6 +7,7 @@ import { setLanguage } from "app/i18n"
 import { useStores } from "app/models"
 import { observer } from "mobx-react-lite"
 import { Picker } from "@react-native-picker/picker"
+import { logEvent, setTelemetryEnabled } from "app/services/telemetry"
 
 export const SettingsScreen: FC<MainTabScreenProps<"Settings">> = observer(function SettingsScreen(
   _props,
@@ -21,17 +22,14 @@ export const SettingsScreen: FC<MainTabScreenProps<"Settings">> = observer(funct
 
   const handleAnalyticsToggle = async (value: boolean) => {
     settingsStore.setAnalyticsEnabled(value)
+    await setTelemetryEnabled(value)
+    // Only the opt-in can be recorded: after opting out nothing may be sent any more.
+    if (value) logEvent("telemetry_opt_in")
+  }
 
-    if (Platform.OS !== "web") {
-      const firebase = (await import("@react-native-firebase/analytics")).firebase
-      firebase.analytics().setConsent({
-        analytics_storage: value,
-        ad_storage: value,
-        ad_user_data: value,
-        ad_personalization: value,
-      })
-      firebase.analytics().setAnalyticsCollectionEnabled(value)
-    }
+  const handleLanguageChange = (value: "en" | "ru") => {
+    settingsStore.setLanguage(value)
+    logEvent("language_changed", { language: value })
   }
 
   return (
@@ -41,7 +39,7 @@ export const SettingsScreen: FC<MainTabScreenProps<"Settings">> = observer(funct
       <Text tx="settingsScreen.languageLabel" style={$label} />
       <Picker
         selectedValue={settingsStore.language}
-        onValueChange={(value) => settingsStore.setLanguage(value)}
+        onValueChange={handleLanguageChange}
         mode="dropdown"
         style={[$picker, Platform.OS === "web" && $pickerWebOnly]}
       >

@@ -7,6 +7,7 @@ import {
 } from "@react-navigation/native"
 import Config from "../config"
 import type { PersistNavigationConfig } from "../config/config.base"
+import { logScreenView } from "../services/telemetry"
 import { useIsMounted } from "../utils/useIsMounted"
 import type { AppStackParamList, NavigationProps } from "./AppNavigator"
 
@@ -135,6 +136,7 @@ export function useNavigationPersistence(storage: Storage, persistenceKey: strin
         if (__DEV__) {
           console.log(currentRouteName)
         }
+        logScreenView(currentRouteName)
       }
 
       // Save the current route name for later comparison

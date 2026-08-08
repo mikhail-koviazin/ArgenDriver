@@ -5,6 +5,7 @@ import { MainTabScreenProps } from "../../navigators/MainNavigator"
 import { spacing } from "../../theme"
 import { Picker } from "@react-native-picker/picker"
 import { useState } from "react"
+import { logEvent } from "app/services/telemetry"
 
 export const StartTestScreen: FC<MainTabScreenProps<"StartTest">> = function StartTestScreen(
   _props,
@@ -29,7 +30,10 @@ export const StartTestScreen: FC<MainTabScreenProps<"StartTest">> = function Sta
 
       <Button
         tx="startTestScreen.startButton"
-        onPress={() => _props.navigation.push("Test", { questionsCount })}
+        onPress={() => {
+          logEvent("test_started", { questions_count: questionsCount })
+          _props.navigation.push("Test", { questionsCount })
+        }}
       />
     </Screen>
   )

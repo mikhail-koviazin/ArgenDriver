@@ -3,7 +3,7 @@ import { Instance, SnapshotOut, types } from "mobx-state-tree"
 export const SettingsStoreModel = types
   .model("SettingsStore")
   .props({
-    language: types.optional(types.enumeration(["en", "ru"]), "en"),
+    language: types.optional(types.enumeration(["en", "ru"] as const), "en"),
     analyticsEnabled: types.optional(types.boolean, false),
   })
   .actions((store) => ({

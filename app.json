@@ -31,6 +31,7 @@
     "android": {
       "icon": "./assets/images/app-icon-android-legacy.png",
       "package": "com.argendriver",
+      "googleServicesFile": "./google-services.json",
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/app-icon-android-adaptive-foreground.png",
         "backgroundImage": "./assets/images/app-icon-android-adaptive-background.png"
@@ -45,6 +46,7 @@
       "icon": "./assets/images/app-icon-ios.png",
       "supportsTablet": true,
       "bundleIdentifier": "com.argendriver",
+      "googleServicesFile": "./GoogleService-Info.plist",
       "splash": {
         "image": "./assets/images/splash-logo-ios-mobile.png",
         "tabletImage": "./assets/images/splash-logo-ios-tablet.png",
@@ -67,7 +69,8 @@
         "expo-build-properties",
         {
           "ios": {
-            "newArchEnabled": false
+            "newArchEnabled": false,
+            "useFrameworks": "static"
           },
           "android": {
             "newArchEnabled": false
@@ -75,7 +78,9 @@
         }
       ],
       "expo-font",
-      "react-native-email-link"
+      "react-native-email-link",
+      "@react-native-firebase/app",
+      "@react-native-firebase/crashlytics"
     ],
     "experiments": {
       "tsconfigPaths": true
