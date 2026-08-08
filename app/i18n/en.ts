@@ -1,7 +1,7 @@
 export type ChangelogEntry = {
-    version: string
-    date: string
-    list: string[]
+  version: string
+  date: string
+  list: string[]
 }
 
 const en = {
@@ -27,16 +27,12 @@ const en = {
       {
         version: "0.0.1",
         date: "20.09.2024",
-        list: [
-          "Implemented test passing"
-        ]
+        list: ["Implemented test passing"],
       },
       {
         version: "0.0.2",
         date: "20.09.2024",
-        list: [
-          "Set up deploy to Vercel and bind domain"
-        ]
+        list: ["Set up deploy to Vercel and bind domain"],
       },
       {
         version: "0.0.3",
@@ -45,52 +41,37 @@ const en = {
           "Added statistics after passing the test",
           "Added feedback",
           "Added language switch for test translation",
-        ]
+        ],
       },
       {
         version: "0.0.4",
         date: "22.09.2024",
-        list: [
-          "Feedback fixes",
-        ]
+        list: ["Feedback fixes"],
       },
       {
         version: "1.0.0",
         date: "23.09.2024",
-        list: [
-          "Release",
-          "Translation fixes",
-        ]
+        list: ["Release", "Translation fixes"],
       },
       {
         version: "1.0.1",
         date: "06.10.2024",
-        list: [
-          "Fix images on small screens",
-          "Added changelog",
-          "Translation fixes",
-        ]
+        list: ["Fix images on small screens", "Added changelog", "Translation fixes"],
       },
       {
         version: "1.0.2",
         date: "28.10.2024",
-        list: [
-          "Translation fixes",
-        ]
+        list: ["Translation fixes"],
       },
       {
         version: "1.0.3",
         date: "20.12.2024",
-        list: [
-          "Translation fixes",
-        ]
+        list: ["Translation fixes"],
       },
       {
         version: "1.0.4",
         date: "13.05.2025",
-        list: [
-          "Translation fixes",
-        ]
+        list: ["Translation fixes"],
       },
       {
         version: "1.1.0",
@@ -99,8 +80,8 @@ const en = {
           "Major app refactoring",
           "Extensive translation fixes",
           "Old version of the app is available at:",
-          "https://old.argen-driver.koviazin.dev"
-        ]
+          "https://old.argen-driver.koviazin.dev",
+        ],
       },
     ] as ChangelogEntry[],
   },
