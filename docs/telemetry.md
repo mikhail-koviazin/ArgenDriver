@@ -61,15 +61,35 @@ reportCrash(error: Error, type?: ErrorType): void
 
 ## Настройка Firebase
 
+Проект: **`argendriver-81b35`** (аккаунт mikhail.koviazin@gmail.com). Приложения: Android и iOS с идентификатором `com.argendriver`, плюс web.
+
 Автосбор выключен в `firebase.json` (`analytics_auto_collection_enabled: false`), иначе Firebase начал бы слать события до того, как пользователь дал согласие.
 
-Нативные сборки требуют файлов конфигурации в корне репозитория, они прописаны в `app.json`:
+### Ключи не в репозитории
 
-- `google-services.json` - Android
-- `GoogleService-Info.plist` - iOS
+Репозиторий публичный, поэтому ни один файл с конфигом Firebase в него не коммитится. Формально эти значения не секреты (Google это документирует, а веб-конфиг вообще уезжает в JS-бандл к каждому посетителю), но отдавать ботам-скреперам живые ключи незачем.
 
-Без них приложение соберется и запустится, но телеметрия будет молча выключена. Файлы не секретные (Google явно это документирует), но у публичного репозитория стоит ограничить API-ключи по package name и SHA-1 в Google Cloud Console.
+Что нужно разложить локально, чтобы собрать с работающей телеметрией:
 
-Конфиг веба лежит в `webConfig.ts` и попадает в JS-бандл в открытом виде - это нормально по дизайну Firebase JS SDK. Без `measurementId` (появляется только после привязки Google Analytics к проекту) веб-телеметрия остается выключенной.
+| Файл | Откуда взять | Для чего |
+|------|--------------|----------|
+| `google-services.json` | Firebase console -> Project settings -> Your apps -> Android | Android-сборка |
+| `GoogleService-Info.plist` | там же, iOS-приложение | iOS-сборка |
+| `.env` | скопировать `.env.example`, заполнить из Web app -> SDK setup | веб-сборка |
+
+Все три в `.gitignore`. Пути к нативным файлам прописаны в `app.json`, веб читает `.env` через `EXPO_PUBLIC_*` (Expo подставляет их на этапе сборки, см. `webConfig.ts`).
+
+Быстрый способ достать заново, если CLI авторизован:
+
+```bash
+firebase apps:list --project argendriver-81b35
+firebase apps:sdkconfig ANDROID <appId> --out google-services.json
+firebase apps:sdkconfig IOS <appId> --out GoogleService-Info.plist
+firebase apps:sdkconfig WEB <appId>          # значения для .env
+```
+
+Без этих файлов приложение собирается и работает нормально, телеметрия просто молча выключена. Для CI и EAS-сборок значения кладутся в EAS secrets (файлы - как file secrets, `.env` - как переменные окружения), а не в репозиторий.
+
+Отдельно стоит ограничить сами ключи в Google Cloud Console: Android - по package name и SHA-1, веб - по HTTP-референеру. Тогда утечка ключа перестает что-либо значить.
 
 Плагины `@react-native-firebase/app` и `@react-native-firebase/crashlytics` подключены в `app.json`; для iOS там же выставлен `useFrameworks: "static"`, без него Firebase не собирается. После изменения этих настроек нужен `yarn prebuild:clean`.
