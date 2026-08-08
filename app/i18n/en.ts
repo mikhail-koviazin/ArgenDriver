@@ -83,6 +83,15 @@ const en = {
           "https://old.argen-driver.koviazin.dev",
         ],
       },
+      {
+        version: "1.2.0",
+        date: "08.08.2026",
+        list: [
+          "Optional usage statistics and crash reports, so it is visible which questions trip people up and what breaks",
+          "The app asks once on the first launch, and the answer can be changed at any time in Settings",
+          "Nothing personal is collected and there is no advertising",
+        ],
+      },
     ] as ChangelogEntry[],
   },
   settingsScreen: {
