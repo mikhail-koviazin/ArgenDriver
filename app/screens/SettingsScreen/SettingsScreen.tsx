@@ -7,59 +7,57 @@ import { setLanguage } from "app/i18n"
 import { useStores } from "app/models"
 import { observer } from "mobx-react-lite"
 import { Picker } from "@react-native-picker/picker"
+import { logEvent, setTelemetryEnabled } from "app/services/telemetry"
 
-export const SettingsScreen: FC<MainTabScreenProps<"Settings">> = observer(
-  function SettingsScreen(_props) {
-    const { settingsStore } = useStores()
-    const [, setCounter] = useState(0)
+export const SettingsScreen: FC<MainTabScreenProps<"Settings">> = observer(function SettingsScreen(
+  _props,
+) {
+  const { settingsStore } = useStores()
+  const [, setCounter] = useState(0)
 
-    useEffect(() => {
-      setLanguage(settingsStore.language)
-      setCounter((c) => c + 1)
-    }, [settingsStore.language])
+  useEffect(() => {
+    setLanguage(settingsStore.language)
+    setCounter((c) => c + 1)
+  }, [settingsStore.language])
 
-    const handleAnalyticsToggle = async (value: boolean) => {
-      settingsStore.setAnalyticsEnabled(value)
+  const handleAnalyticsToggle = async (value: boolean) => {
+    settingsStore.setAnalyticsEnabled(value)
+    await setTelemetryEnabled(value)
+    // Only the opt-in can be recorded: after opting out nothing may be sent any more.
+    if (value) logEvent("telemetry_opt_in")
+  }
 
-      if (Platform.OS !== "web") {
-        const firebase = (await import("@react-native-firebase/analytics")).firebase
-        firebase.analytics().setConsent({
-          analytics_storage: value,
-          ad_storage: value,
-          ad_user_data: value,
-          ad_personalization: value,
-        })
-        firebase.analytics().setAnalyticsCollectionEnabled(value)
-      }
-    }
+  const handleLanguageChange = (value: "en" | "ru") => {
+    settingsStore.setLanguage(value)
+    logEvent("language_changed", { language: value })
+  }
 
-    return (
-      <Screen preset="fixed" contentContainerStyle={$container} safeAreaEdges={["top"]}>
-        <Text preset="heading" tx="settingsScreen.title" style={$title} />
+  return (
+    <Screen preset="fixed" contentContainerStyle={$container} safeAreaEdges={["top"]}>
+      <Text preset="heading" tx="settingsScreen.title" style={$title} />
 
-        <Text tx="settingsScreen.languageLabel" style={$label} />
-        <Picker
-          selectedValue={settingsStore.language}
-          onValueChange={(value) => settingsStore.setLanguage(value)}
-          mode="dropdown"
-          style={[$picker, Platform.OS === "web" && $pickerWebOnly]}
-        >
-          <Picker.Item label="English" value="en" />
-          <Picker.Item label="Русский" value="ru" />
-        </Picker>
+      <Text tx="settingsScreen.languageLabel" style={$label} />
+      <Picker
+        selectedValue={settingsStore.language}
+        onValueChange={handleLanguageChange}
+        mode="dropdown"
+        style={[$picker, Platform.OS === "web" && $pickerWebOnly]}
+      >
+        <Picker.Item label="English" value="en" />
+        <Picker.Item label="Русский" value="ru" />
+      </Picker>
 
-        <Toggle
-          variant="switch"
-          value={settingsStore.analyticsEnabled}
-          onValueChange={handleAnalyticsToggle}
-          labelTx="settingsScreen.analyticsLabel"
-          helperTx="settingsScreen.analyticsDescription"
-          containerStyle={$toggleRow}
-        />
-      </Screen>
-    )
-  },
-)
+      <Toggle
+        variant="switch"
+        value={settingsStore.analyticsEnabled}
+        onValueChange={handleAnalyticsToggle}
+        labelTx="settingsScreen.analyticsLabel"
+        helperTx="settingsScreen.analyticsDescription"
+        containerStyle={$toggleRow}
+      />
+    </Screen>
+  )
+})
 
 const $container: ViewStyle = {
   paddingTop: spacing.lg + spacing.xl,

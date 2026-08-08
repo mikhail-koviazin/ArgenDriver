@@ -5,6 +5,7 @@ import { MainTabScreenProps } from "../../navigators/MainNavigator"
 import { spacing } from "../../theme"
 import { Picker } from "@react-native-picker/picker"
 import { useState } from "react"
+import { logEvent } from "app/services/telemetry"
 
 export const StartTestScreen: FC<MainTabScreenProps<"StartTest">> = function StartTestScreen(
   _props,
@@ -18,7 +19,9 @@ export const StartTestScreen: FC<MainTabScreenProps<"StartTest">> = function Sta
 
       <Picker
         selectedValue={questionsCount}
-        onValueChange={(value) => setQuestionsCount(value)}
+        // Web hands back the option's string value, native hands back the number. Normalise
+        // here so the route param and the analytics parameter are numeric on both.
+        onValueChange={(value) => setQuestionsCount(Number(value))}
         mode="dropdown"
         style={[$picker, Platform.OS === "web" && $pickerWebOnly]}
       >
@@ -29,7 +32,10 @@ export const StartTestScreen: FC<MainTabScreenProps<"StartTest">> = function Sta
 
       <Button
         tx="startTestScreen.startButton"
-        onPress={() => _props.navigation.push("Test", { questionsCount })}
+        onPress={() => {
+          logEvent("test_started", { questions_count: questionsCount })
+          _props.navigation.push("Test", { questionsCount })
+        }}
       />
     </Screen>
   )

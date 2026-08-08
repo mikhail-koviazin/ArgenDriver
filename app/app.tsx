@@ -12,6 +12,7 @@ import { useFonts } from "expo-font"
 import React from "react"
 import { initialWindowMetrics, SafeAreaProvider } from "react-native-safe-area-context"
 import * as Linking from "expo-linking"
+import { TelemetryConsentPrompt } from "./components"
 import { useInitialRootStore, useStores } from "./models"
 import { AppNavigator, useNavigationPersistence } from "./navigators"
 import { ErrorBoundary } from "./screens/ErrorScreen/ErrorBoundary"
@@ -19,6 +20,7 @@ import * as storage from "./utils/storage"
 import { customFontsToLoad } from "./theme"
 import Config from "./config"
 import { setLanguage } from "./i18n"
+import { setTelemetryEnabled } from "./services/telemetry"
 
 export const NAVIGATION_PERSISTENCE_KEY = "NAVIGATION_STATE"
 
@@ -45,6 +47,7 @@ function App(props: AppProps) {
   const {
     initialNavigationState,
     onNavigationStateChange,
+    onNavigationReady,
     isRestored: isNavigationStateRestored,
   } = useNavigationPersistence(storage, NAVIGATION_PERSISTENCE_KEY)
 
@@ -53,6 +56,12 @@ function App(props: AppProps) {
   const { settingsStore } = useStores()
   const { rehydrated } = useInitialRootStore(() => {
     setLanguage(settingsStore.language)
+    // Anyone already opted in did so from the settings toggle, before the prompt existed.
+    // They have made their choice and should not be asked again.
+    if (settingsStore.analyticsEnabled) settingsStore.markAnalyticsChoiceMade()
+    // Applied here rather than in an effect: the navigator must not mount before the stored
+    // choice is known, or the first screen view of the session races the consent and is dropped.
+    setTelemetryEnabled(settingsStore.analyticsEnabled)
     setTimeout(hideSplashScreen, 500)
   })
 
@@ -71,8 +80,10 @@ function App(props: AppProps) {
         <AppNavigator
           linking={linking}
           initialState={initialNavigationState}
+          onReady={onNavigationReady}
           onStateChange={onNavigationStateChange}
         />
+        <TelemetryConsentPrompt />
       </ErrorBoundary>
     </SafeAreaProvider>
   )

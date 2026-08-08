@@ -1,7 +1,7 @@
 import { BottomTabScreenProps, createBottomTabNavigator } from "@react-navigation/bottom-tabs"
 import { CompositeScreenProps } from "@react-navigation/native"
-import React, { useEffect } from "react"
-import { Platform, TextStyle, ViewStyle } from "react-native"
+import React from "react"
+import { TextStyle, ViewStyle } from "react-native"
 import { useSafeAreaInsets } from "react-native-safe-area-context"
 import { Icon } from "../components"
 import { translate } from "../i18n"
@@ -10,7 +10,6 @@ import { colors, spacing, typography } from "../theme"
 import { AppStackParamList, AppStackScreenProps } from "./AppNavigator"
 import { ChangelogScreen } from "app/screens/Changelog/ChangelogScreen"
 import { SettingsScreen } from "app/screens/SettingsScreen/SettingsScreen"
-import { useStores } from "app/models"
 
 export type MainTabParamList = {
   StartTest: undefined
@@ -27,24 +26,6 @@ const Tab = createBottomTabNavigator<MainTabParamList>()
 
 export function MainNavigator() {
   const { bottom } = useSafeAreaInsets()
-  const { settingsStore } = useStores()
-
-  useEffect(() => {
-    if (Platform.OS === "web") return
-
-    const applyAnalyticsConsent = async () => {
-      const firebase = (await import("@react-native-firebase/analytics")).firebase
-      firebase.analytics().setConsent({
-        analytics_storage: settingsStore.analyticsEnabled,
-        ad_storage: settingsStore.analyticsEnabled,
-        ad_user_data: settingsStore.analyticsEnabled,
-        ad_personalization: settingsStore.analyticsEnabled,
-      })
-      firebase.analytics().setAnalyticsCollectionEnabled(settingsStore.analyticsEnabled)
-    }
-
-    applyAnalyticsConsent()
-  }, [settingsStore.analyticsEnabled])
 
   return (
     <Tab.Navigator

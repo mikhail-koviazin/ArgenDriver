@@ -1,7 +1,7 @@
 export type ChangelogEntry = {
-    version: string
-    date: string
-    list: string[]
+  version: string
+  date: string
+  list: string[]
 }
 
 const en = {
@@ -27,16 +27,12 @@ const en = {
       {
         version: "0.0.1",
         date: "20.09.2024",
-        list: [
-          "Implemented test passing"
-        ]
+        list: ["Implemented test passing"],
       },
       {
         version: "0.0.2",
         date: "20.09.2024",
-        list: [
-          "Set up deploy to Vercel and bind domain"
-        ]
+        list: ["Set up deploy to Vercel and bind domain"],
       },
       {
         version: "0.0.3",
@@ -45,52 +41,37 @@ const en = {
           "Added statistics after passing the test",
           "Added feedback",
           "Added language switch for test translation",
-        ]
+        ],
       },
       {
         version: "0.0.4",
         date: "22.09.2024",
-        list: [
-          "Feedback fixes",
-        ]
+        list: ["Feedback fixes"],
       },
       {
         version: "1.0.0",
         date: "23.09.2024",
-        list: [
-          "Release",
-          "Translation fixes",
-        ]
+        list: ["Release", "Translation fixes"],
       },
       {
         version: "1.0.1",
         date: "06.10.2024",
-        list: [
-          "Fix images on small screens",
-          "Added changelog",
-          "Translation fixes",
-        ]
+        list: ["Fix images on small screens", "Added changelog", "Translation fixes"],
       },
       {
         version: "1.0.2",
         date: "28.10.2024",
-        list: [
-          "Translation fixes",
-        ]
+        list: ["Translation fixes"],
       },
       {
         version: "1.0.3",
         date: "20.12.2024",
-        list: [
-          "Translation fixes",
-        ]
+        list: ["Translation fixes"],
       },
       {
         version: "1.0.4",
         date: "13.05.2025",
-        list: [
-          "Translation fixes",
-        ]
+        list: ["Translation fixes"],
       },
       {
         version: "1.1.0",
@@ -99,8 +80,17 @@ const en = {
           "Major app refactoring",
           "Extensive translation fixes",
           "Old version of the app is available at:",
-          "https://old.argen-driver.koviazin.dev"
-        ]
+          "https://old.argen-driver.koviazin.dev",
+        ],
+      },
+      {
+        version: "1.2.0",
+        date: "08.08.2026",
+        list: [
+          "Optional usage statistics and crash reports, so it is visible which questions trip people up and what breaks",
+          "The app asks once on the first launch, and the answer can be changed at any time in Settings",
+          "Nothing personal is collected and there is no advertising",
+        ],
       },
     ] as ChangelogEntry[],
   },
@@ -108,7 +98,15 @@ const en = {
     title: "Settings",
     languageLabel: "Interface language",
     analyticsLabel: "Help improve the app",
-    analyticsDescription: "Send anonymous usage statistics",
+    analyticsDescription: "Send usage statistics. No personal data, no advertising.",
+  },
+  telemetryPrompt: {
+    title: "Help improve the app?",
+    body: "The app can send which screens you open and how tests go, so I can see which questions trip people up and fix what is worth fixing.",
+    details:
+      "Never any personal data and never anything you type. No advertising. You can change this at any time in Settings.",
+    accept: "Sure, send statistics",
+    decline: "No, thanks",
   },
   testScreen: {
     header: "Question %{curQuestion}/%{count} (#%{num})",

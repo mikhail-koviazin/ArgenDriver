@@ -88,3 +88,10 @@ web-build/
 /coverage
 dist/
 .vercel
+
+# Firebase configuration. Not secret in the strict sense, but the repository is public
+# and there is no reason to hand scrapers a set of live API keys. See docs/telemetry.md.
+google-services.json
+GoogleService-Info.plist
+.env
+.env.local

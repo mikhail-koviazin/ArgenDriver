@@ -19,11 +19,18 @@ import { questions, questionImages } from "argendriver-data"
 import { Question } from "app/models/Question"
 import { i18n, translate, TxKeyPath } from "app/i18n"
 import { navigate } from "app/navigators"
+import { AnswerResult, logEvent } from "app/services/telemetry"
 
 enum Answer {
   CORRECT = "CORRECT",
   INCORRECT = "INCORRECT",
   PASS = "PASS",
+}
+
+const ANSWER_RESULT: Record<Answer, AnswerResult> = {
+  [Answer.CORRECT]: "correct",
+  [Answer.INCORRECT]: "incorrect",
+  [Answer.PASS]: "passed",
 }
 
 function prefetchQuestionImages(qs: Question[]) {
@@ -59,6 +66,33 @@ export const TestScreen: FC<AppStackScreenProps<"Test">> = function TestScreen({
   const exitTest = () => {
     exitConfirmed.current = true
     navigate("Main")
+  }
+
+  /**
+   * Both ways out of a test end on the result modal, so this is called wherever that modal
+   * is opened. Whether the run counts as completed depends on how many questions were answered.
+   */
+  const logTestOutcome = () => {
+    const questionsCount = selectedQuestions.length
+
+    if (answers.length < questionsCount) {
+      logEvent("test_abandoned", { questions_count: questionsCount, answered: answers.length })
+      return
+    }
+
+    logEvent("test_completed", {
+      questions_count: questionsCount,
+      correct: answers.filter((a) => a === Answer.CORRECT).length,
+      incorrect: answers.filter((a) => a === Answer.INCORRECT).length,
+      passed: answers.filter((a) => a === Answer.PASS).length,
+    })
+  }
+
+  /** Records the outcome of the current question. `setAnswer` stays with the caller: only it
+   * knows which button was pressed. */
+  const recordAnswer = (result: Answer, questionNum?: number) => {
+    setAnswers((prev) => [...prev, result])
+    logEvent("question_answered", { question_num: questionNum, result: ANSWER_RESULT[result] })
   }
 
   useEffect(() => {
@@ -113,9 +147,10 @@ export const TestScreen: FC<AppStackScreenProps<"Test">> = function TestScreen({
         if (exitConfirmed.current) return
         if (curQuestionNum === 0 && !answer) return
         e.preventDefault()
+        logTestOutcome()
         setModalVisible(true)
       }),
-    [navigation, curQuestionNum, answer],
+    [navigation, curQuestionNum, answer, answers, selectedQuestions],
   )
 
   if (!curQuestion) return null
@@ -148,9 +183,11 @@ export const TestScreen: FC<AppStackScreenProps<"Test">> = function TestScreen({
         <Button
           tx={lang !== "es" ? "testScreen.hideTranslationButton" : undefined}
           LeftAccessory={(props) => <Icon containerStyle={props.style} icon="translation" />}
-          onPress={() =>
-            setLang(lang === "es" ? (i18n.locale.includes("ru") ? "ru" : "en") : "es")
-          }
+          onPress={() => {
+            const next = lang === "es" ? (i18n.locale.includes("ru") ? "ru" : "en") : "es"
+            setLang(next)
+            if (next !== "es") logEvent("translation_shown", { language: next })
+          }}
           style={$prevNextBtn}
         />
       </View>
@@ -162,10 +199,7 @@ export const TestScreen: FC<AppStackScreenProps<"Test">> = function TestScreen({
             text={response.text[lang]}
             onPress={() => {
               setAnswer(index)
-              setAnswers((prev) => [
-                ...prev,
-                response.correct ? Answer.CORRECT : Answer.INCORRECT,
-              ])
+              recordAnswer(response.correct ? Answer.CORRECT : Answer.INCORRECT, curQuestion.num)
             }}
             disabled={answer !== undefined}
             style={
@@ -186,7 +220,7 @@ export const TestScreen: FC<AppStackScreenProps<"Test">> = function TestScreen({
           tx="testScreen.passButton"
           onPress={() => {
             setAnswer(-1)
-            setAnswers((prev) => [...prev, Answer.PASS])
+            recordAnswer(Answer.PASS, curQuestion.num)
           }}
           style={{
             backgroundColor: colors.palette.accent100,
@@ -210,7 +244,10 @@ export const TestScreen: FC<AppStackScreenProps<"Test">> = function TestScreen({
         ) : (
           <Button
             tx="testScreen.finishTestButton"
-            onPress={() => setModalVisible(true)}
+            onPress={() => {
+              logTestOutcome()
+              setModalVisible(true)
+            }}
             style={{
               backgroundColor: colors.palette.secondary100,
               borderColor: colors.palette.secondary300,
@@ -261,42 +298,55 @@ export const TestScreen: FC<AppStackScreenProps<"Test">> = function TestScreen({
         <View style={$centeredView}>
           <View style={$modalView}>
             <Text preset="subheading" tx="testScreen.errorModalTitle" />
-            {(
+            {[
               [
-                [
-                  "testScreen.errorModalIncorrectTranslation" as const,
-                  "[ArgenDriver-BUG]",
-                  `[${curQuestion.num}] Incorrect translation\r\n\r\nQuestion:\r\n - ${curQuestion.text.es}\r\n - ${curQuestion.text[lang]}\r\n\r\n${curQuestion.responses.map((r) => ` - ${r.text.es}\r\n - ${r.text[lang]}`).join("\r\n\r\n")}\r\n\r\nYou may write more details here...`,
-                ],
-                ...(curQuestion.img
-                  ? [
-                      [
-                        "testScreen.errorModalIncorrectImage" as const,
-                        "[ArgenDriver-BUG]",
-                        `[${curQuestion.num}] Incorrect image\r\n\r\nQuestion:\r\n - ${curQuestion.text.es}\r\n\r\nImage: ${curQuestion.img}\r\n\r\nYou may write more details here...`,
-                      ],
-                    ]
-                  : []),
-                [
-                  "testScreen.errorModalIncorrectCorrectAnswerSpanish" as const,
-                  "[ArgenDriver-BUG]",
-                  `[${curQuestion.num}] Incorrect correct answer (Spanish)\r\n\r\nQuestion:\r\n - ${curQuestion.text.es}\r\n\r\n${curQuestion.responses.map((r) => ` - ${r.text.es}\r\n - ${r.correct ? "correct" : "incorrect"}`).join("\r\n\r\n")}\r\n\r\nYou may write more details here...`,
-                ],
-                [
-                  "testScreen.errorModalIncorrectOther" as const,
-                  "[ArgenDriver-BUG]",
-                  `[${curQuestion.num}] Other\r\n\r\nPlease describe the issue here (don't delete question number above)`,
-                ],
-              ]
-            ).map(([tx, subject, body], i) => (
+                "testScreen.errorModalIncorrectTranslation" as const,
+                "translation",
+                "[ArgenDriver-BUG]",
+                `[${curQuestion.num}] Incorrect translation\r\n\r\nQuestion:\r\n - ${
+                  curQuestion.text.es
+                }\r\n - ${curQuestion.text[lang]}\r\n\r\n${curQuestion.responses
+                  .map((r) => ` - ${r.text.es}\r\n - ${r.text[lang]}`)
+                  .join("\r\n\r\n")}\r\n\r\nYou may write more details here...`,
+              ],
+              ...(curQuestion.img
+                ? [
+                    [
+                      "testScreen.errorModalIncorrectImage" as const,
+                      "image",
+                      "[ArgenDriver-BUG]",
+                      `[${curQuestion.num}] Incorrect image\r\n\r\nQuestion:\r\n - ${curQuestion.text.es}\r\n\r\nImage: ${curQuestion.img}\r\n\r\nYou may write more details here...`,
+                    ],
+                  ]
+                : []),
+              [
+                "testScreen.errorModalIncorrectCorrectAnswerSpanish" as const,
+                "correct_answer",
+                "[ArgenDriver-BUG]",
+                `[${curQuestion.num}] Incorrect correct answer (Spanish)\r\n\r\nQuestion:\r\n - ${
+                  curQuestion.text.es
+                }\r\n\r\n${curQuestion.responses
+                  .map((r) => ` - ${r.text.es}\r\n - ${r.correct ? "correct" : "incorrect"}`)
+                  .join("\r\n\r\n")}\r\n\r\nYou may write more details here...`,
+              ],
+              [
+                "testScreen.errorModalIncorrectOther" as const,
+                "other",
+                "[ArgenDriver-BUG]",
+                `[${curQuestion.num}] Other\r\n\r\nPlease describe the issue here (don't delete question number above)`,
+              ],
+            ].map(([tx, kind, subject, body], i) => (
               <Button
                 key={i}
                 tx={tx as TxKeyPath}
                 onPress={() => {
+                  logEvent("bug_report_started", { kind, question_num: curQuestion.num })
                   const encodedBody = body.replaceAll(/\?/g, "¿")
                   if (Platform.OS === "web") {
                     Linking.openURL(
-                      `mailto:mikhail.koviazin+argen-driver-bug@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(encodedBody)}`,
+                      `mailto:mikhail.koviazin+argen-driver-bug@gmail.com?subject=${encodeURIComponent(
+                        subject,
+                      )}&body=${encodeURIComponent(encodedBody)}`,
                     )
                   } else {
                     openComposer({
@@ -309,7 +359,10 @@ export const TestScreen: FC<AppStackScreenProps<"Test">> = function TestScreen({
                 }}
               />
             ))}
-            <Button tx="testScreen.errorModalCloseButton" onPress={() => setErrorModalVisible(false)} />
+            <Button
+              tx="testScreen.errorModalCloseButton"
+              onPress={() => setErrorModalVisible(false)}
+            />
           </View>
         </View>
       </Modal>
