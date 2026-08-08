@@ -126,6 +126,17 @@ export function useNavigationPersistence(storage: Storage, persistenceKey: strin
 
   const routeNameRef = useRef<keyof AppStackParamList | undefined>()
 
+  /**
+   * `onStateChange` does not fire for the state the navigator mounts with, so without this
+   * the first screen of every session would go unreported.
+   */
+  const onNavigationReady = () => {
+    if (!navigationRef.isReady()) return
+    const routeName = getActiveRouteName(navigationRef.getRootState())
+    routeNameRef.current = routeName as keyof AppStackParamList
+    logScreenView(routeName)
+  }
+
   const onNavigationStateChange = (state: NavigationState | undefined) => {
     const previousRouteName = routeNameRef.current
     if (state !== undefined) {
@@ -165,7 +176,13 @@ export function useNavigationPersistence(storage: Storage, persistenceKey: strin
     if (!isRestored) restoreState()
   }, [isRestored])
 
-  return { onNavigationStateChange, restoreState, isRestored, initialNavigationState }
+  return {
+    onNavigationReady,
+    onNavigationStateChange,
+    restoreState,
+    isRestored,
+    initialNavigationState,
+  }
 }
 
 /**

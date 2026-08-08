@@ -9,7 +9,7 @@ import "./utils/gestureHandler"
 import "./i18n"
 import "./utils/ignoreWarnings"
 import { useFonts } from "expo-font"
-import React, { useEffect } from "react"
+import React from "react"
 import { initialWindowMetrics, SafeAreaProvider } from "react-native-safe-area-context"
 import * as Linking from "expo-linking"
 import { useInitialRootStore, useStores } from "./models"
@@ -46,6 +46,7 @@ function App(props: AppProps) {
   const {
     initialNavigationState,
     onNavigationStateChange,
+    onNavigationReady,
     isRestored: isNavigationStateRestored,
   } = useNavigationPersistence(storage, NAVIGATION_PERSISTENCE_KEY)
 
@@ -54,14 +55,11 @@ function App(props: AppProps) {
   const { settingsStore } = useStores()
   const { rehydrated } = useInitialRootStore(() => {
     setLanguage(settingsStore.language)
+    // Applied here rather than in an effect: the navigator must not mount before the stored
+    // choice is known, or the first screen view of the session races the consent and is dropped.
+    setTelemetryEnabled(settingsStore.analyticsEnabled)
     setTimeout(hideSplashScreen, 500)
   })
-
-  // The stored choice is only known after rehydration. Later changes are applied by
-  // SettingsScreen itself, so this runs once per launch.
-  useEffect(() => {
-    if (rehydrated) setTelemetryEnabled(settingsStore.analyticsEnabled)
-  }, [rehydrated])
 
   if (!rehydrated || !isNavigationStateRestored || (!areFontsLoaded && !fontLoadError)) {
     return null
@@ -78,6 +76,7 @@ function App(props: AppProps) {
         <AppNavigator
           linking={linking}
           initialState={initialNavigationState}
+          onReady={onNavigationReady}
           onStateChange={onNavigationStateChange}
         />
       </ErrorBoundary>

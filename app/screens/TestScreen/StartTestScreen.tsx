@@ -19,7 +19,9 @@ export const StartTestScreen: FC<MainTabScreenProps<"StartTest">> = function Sta
 
       <Picker
         selectedValue={questionsCount}
-        onValueChange={(value) => setQuestionsCount(value)}
+        // Web hands back the option's string value, native hands back the number. Normalise
+        // here so the route param and the analytics parameter are numeric on both.
+        onValueChange={(value) => setQuestionsCount(Number(value))}
         mode="dropdown"
         style={[$picker, Platform.OS === "web" && $pickerWebOnly]}
       >
