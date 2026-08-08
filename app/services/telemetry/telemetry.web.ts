@@ -54,12 +54,13 @@ export async function setTelemetryEnabled(value: boolean) {
   enabled = value
 
   await safe(async () => {
-    const state = value ? "granted" : "denied"
     setConsent({
-      analytics_storage: state,
-      ad_storage: state,
-      ad_user_data: state,
-      ad_personalization: state,
+      analytics_storage: value ? "granted" : "denied",
+      // The app carries no advertising and is not linked to Google Ads, so the ad consents
+      // buy nothing and are never granted.
+      ad_storage: "denied",
+      ad_user_data: "denied",
+      ad_personalization: "denied",
     })
 
     // Opting out must not spin up the SDK just to switch it off again.

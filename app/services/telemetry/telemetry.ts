@@ -34,9 +34,11 @@ export async function setTelemetryEnabled(value: boolean) {
     const analytics = firebase.analytics()
     await analytics.setConsent({
       analytics_storage: value,
-      ad_storage: value,
-      ad_user_data: value,
-      ad_personalization: value,
+      // The app carries no advertising and is not linked to Google Ads, so the ad consents
+      // buy nothing. Granting them would drag iOS into App Tracking Transparency territory.
+      ad_storage: false,
+      ad_user_data: false,
+      ad_personalization: false,
     })
     await analytics.setAnalyticsCollectionEnabled(value)
   })
