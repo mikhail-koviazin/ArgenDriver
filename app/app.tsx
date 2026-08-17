@@ -21,6 +21,11 @@ import { customFontsToLoad } from "./theme"
 import Config from "./config"
 import { setLanguage } from "./i18n"
 import { setTelemetryEnabled } from "./services/telemetry"
+import { initWebAnalytics } from "./services/webAnalytics"
+
+// Runs once per page load, outside React: the visit counter carries no consent and no stored
+// state, so it has nothing to wait for.
+initWebAnalytics()
 
 export const NAVIGATION_PERSISTENCE_KEY = "NAVIGATION_STATE"
 
