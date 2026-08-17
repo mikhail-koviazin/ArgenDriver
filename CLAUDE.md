@@ -1,15 +1,15 @@
 # ArgenDriver
 
-Приложение для подготовки к экзамену по ПДД Аргентины (React Native + Expo). Вопросы на испанском с переводом на русский/английский. Деплоится как веб-приложение (GitHub Pages) и как мобильное приложение (Android/iOS).
+Приложение для подготовки к экзамену по ПДД Аргентины (React Native + Expo). Вопросы на испанском с переводом на русский/английский. Деплоится как веб-приложение (Vercel) и как мобильное приложение (Android/iOS).
 
 ## Стек
 
-- **React Native + Expo ~51** — web, Android, iOS
-- **React Navigation** — bottom tabs (`MainNavigator`) + native stack (`AppNavigator`)
-- **MobX State Tree** — персистентное состояние через AsyncStorage (язык интерфейса, настройки)
-- **Firebase (RN)** — аналитика, crashlytics (только нативные платформы, не web)
-- **i18n-js** — UI на EN/RU; контент вопросов на ES/EN/RU
-- **Expo + gh-pages** — деплой веба
+- **React Native + Expo ~51** - web, Android, iOS
+- **React Navigation** - bottom tabs (`MainNavigator`) + native stack (`AppNavigator`)
+- **MobX State Tree** - персистентное состояние через AsyncStorage (язык интерфейса, настройки)
+- **Firebase** - аналитика и crashlytics. На Android/iOS через `@react-native-firebase`, на web через Firebase JS SDK
+- **i18n-js** - UI на EN/RU; контент вопросов на ES/EN/RU
+- **Vercel** - деплой веба на push в master
 
 ## Запуск
 
@@ -18,14 +18,16 @@ yarn start          # Expo dev server (web/Android/iOS)
 yarn web            # Веб в браузере
 yarn android        # Android
 yarn ios            # iOS
-yarn deploy         # Деплой на GitHub Pages
+
+# Веб деплоится Vercel'ом автоматически на push в master.
+# Скрипт yarn deploy (gh-pages) и ветка origin/gh-pages - легаси, не использовать.
 ```
 
 ## Структура
 
 ```
 app/
-  components/        # UI-компоненты (Button, Text, Screen, Icon, ...)
+  components/        # UI-компоненты (Button, Text, Screen, Icon, TelemetryConsentPrompt, ...)
   config/            # Конфиги dev/prod
   i18n/
     en.ts            # Английские переводы UI
@@ -33,7 +35,7 @@ app/
     i18n.ts          # Инициализация i18n-js, setLanguage()
   models/
     RootStore.ts     # Корневой MST-стор
-    SettingsStore.ts # Язык интерфейса, флаг аналитики
+    SettingsStore.ts # Язык интерфейса, согласие на телеметрию
     helpers/         # setupRootStore (AsyncStorage persistence), useStores
   navigators/
     AppNavigator.tsx # Корневой стек-навигатор
@@ -42,24 +44,25 @@ app/
     TestScreen/
       StartTestScreen.tsx     # Экран выбора кол-ва вопросов и запуска теста
       TestScreen.tsx          # Основной экран теста
-      question_images/        # 275+ локальных JPG (b1.jpg ... b275.jpg)
-      question_images/questionImages.ts  # Маппинг key → require()
     Changelog/
       ChangelogScreen.tsx     # История изменений
     SettingsScreen/
       SettingsScreen.tsx      # Язык интерфейса + тоггл аналитики
     ErrorScreen/              # Обработка ошибок (ErrorBoundary)
+  services/
+    telemetry/       # Обёртка над Firebase, platform-split .ts/.web.ts
   theme/             # Цвета, шрифты, отступы
   utils/             # AsyncStorage, openLinkInBrowser, useSafeArea и др.
-app.tsx              # Корневой компонент (шрифты, навигация, MST init)
+  app.tsx            # Корневой компонент (шрифты, навигация, MST init)
 App.tsx              # Expo entry point (SplashScreen)
-app/questions.json   # Все вопросы (~275 шт., es/en/ru, с картинками)
+docs/
+  telemetry.md       # Схема событий, согласие, настройка Firebase
 ```
 
 ## Данные
 
-- **questions.json** — весь контент бандлится локально для офлайн-работы
-- **question_images/** — 275+ JPG бандлятся через require() для офлайн-работы
+- Вопросы и картинки живут в отдельном репозитории и подключены пакетом `argendriver-data` (`github:mikhail-koviazin/ArgenDriver-Data`)
+- Всё бандлится локально для офлайн-работы
 - Вопросы: `{ num, text: {es,en,ru}, img?, responses: [{text:{es,en,ru}, correct?}], explanation: {text:{es,en,ru}}, citation? }`
 
 ## Экраны
@@ -71,11 +74,12 @@ app/questions.json   # Все вопросы (~275 шт., es/en/ru, с карт�
 | ChangelogScreen | История версий |
 | SettingsScreen | Язык интерфейса (EN/RU), тоггл аналитики Firebase |
 
-## Аналитика
+## Телеметрия
 
-Firebase Analytics используется только на нативных платформах. На web недоступна. Пользователь явно включает её в SettingsScreen (opt-in, по умолчанию отключена).
+Аналитика и Crashlytics работают на всех платформах и включаются только по согласию пользователя. Приложение спрашивает один раз при первом запуске, ответ меняется в SettingsScreen. Рекламные согласия не выдаются никогда. Подробности, схема событий и настройка - в `docs/telemetry.md`.
 
 ## Планы / известные вещи
 
-- Вопросы и картинки планируется вынести в отдельный GitHub-репозиторий как зависимость (чтобы коммиты с правками вопросов не засоряли основной репо)
 - Испанский UI не реализован (контент тестов только на ES)
+- Ключи Firebase не ограничены в Google Cloud Console
+- Нативные сборки с Firebase ни разу не собирались
