@@ -51,6 +51,7 @@ app/
     ErrorScreen/              # Обработка ошибок (ErrorBoundary)
   services/
     telemetry/       # Обёртка над Firebase, platform-split .ts/.web.ts
+    webAnalytics/    # Счётчик заходов Vercel, platform-split .ts/.web.ts
   theme/             # Цвета, шрифты, отступы
   utils/             # AsyncStorage, openLinkInBrowser, useSafeArea и др.
   app.tsx            # Корневой компонент (шрифты, навигация, MST init)
@@ -78,8 +79,10 @@ docs/
 
 Аналитика и Crashlytics работают на всех платформах и включаются только по согласию пользователя. Приложение спрашивает один раз при первом запуске, ответ меняется в SettingsScreen. Рекламные согласия не выдаются никогда. Подробности, схема событий и настройка - в `docs/telemetry.md`.
 
+Отдельно от Firebase работает Vercel Web Analytics: счётчик заходов на веб-деплой, намеренно не привязанный к согласию, потому что он без cookies и без идентификаторов. Он отвечает на вопрос "заходит ли кто-нибудь вообще", на который согласованная телеметрия ответить не может. Реализация в `app/services/webAnalytics/`, обоснование и грабли с rewrite в `vercel.json` - в `docs/telemetry.md`.
+
 ## Планы / известные вещи
 
 - Испанский UI не реализован (контент тестов только на ES)
 - Ключи Firebase не ограничены в Google Cloud Console
-- Нативные сборки с Firebase ни разу не собирались
+- Нативные сборки (Android/iOS) не в планах, приложение живёт как веб
